@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Session } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { PrismaService } from '../prisma.service';
@@ -13,15 +13,17 @@ export class CompaniesService {
     const company = await this.prismaService.company.create({
       data: createCompanyDto.company
     })
+    /*console.log(session.userId)
     if(company?.id) {
       const { id } = company
       let memberData = createCompanyDto.member
-      const dataMemb = memberData.map((item: Member) => {
+      const dataMemb = memberData.map((item: any) => {
         item.companyId = id
+        item.userId = session.userId
         return item
       })      
       const result = await Promise.all(dataMemb.map((an) => this.memberService.create({"member":{...an}})))
-    }    
+    }  */  
     return company;
   }
 
@@ -49,8 +51,8 @@ export class CompaniesService {
       where: { id }, data: updateCompanyDto.company,
     });
 
-    let memberData = updateCompanyDto.member
-    const result = await Promise.all(memberData.map((an: Member ) => this.memberService.update(an.id, {"member":{...an}})))
+    /*let memberData = updateCompanyDto.member
+    const result = await Promise.all(memberData.map((an: Member ) => this.memberService.update(an.id, {"member":{...an}})))*/
     return data
   }
 

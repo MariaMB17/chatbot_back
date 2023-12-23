@@ -23,6 +23,6 @@ export class AuthAppController {
     console.log('--------------')
     console.log(data)
     console.log('--------------')
-    return this.authAppService.evtLogin(data);
+    return this.authAppService.evtLogin(data.id,data);
   }
 }

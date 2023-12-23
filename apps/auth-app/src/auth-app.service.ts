@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, Session } from '@nestjs/common';
 import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
 import { createAuthDto } from './dtos/login.dto';
 import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
@@ -25,7 +25,7 @@ export class AuthAppService {
     console.log(message);
   }
 
-  async evtLogin(createAuthDto: createAuthDto): Promise<Observable<User | Errors>> {
+  async evtLogin(@Session() session: Record<string, any>, createAuthDto: createAuthDto): Promise<Observable<User | Errors>> {
     return from(this.prismaService.user.findFirst({
       where: {
         email: createAuthDto.email,

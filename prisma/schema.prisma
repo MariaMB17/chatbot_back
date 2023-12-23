@@ -53,14 +53,13 @@ model Company {
   member Member[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-
   @@map("companies")
 }
 
 model Member {
   id Int    @id @default(autoincrement()) 
   Company   Company?   @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  companyId Int?       @unique
+  companyId Int?       
   User      User?      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId    Int?       @unique
   createdAt DateTime   @default(now())

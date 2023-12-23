@@ -26,5 +26,6 @@ import { ProfileService } from '../profile/profile.service';
   ],
   controllers: [UsersController],
   providers: [UsersService, PrismaService, JwtService, ProfileService],
+  exports: [ UsersService ],
 })
 export class UsersModule {}

@@ -8,7 +8,12 @@ import { CompaniesModule } from './companies/companies.module';
 import { MembersModule } from './members/members.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, ProfileModule, CompaniesModule, MembersModule],
+  imports: [
+    AuthModule, 
+    UsersModule, 
+    ProfileModule, 
+    CompaniesModule, 
+    MembersModule],
   controllers: [AppController],
   providers: [AppService],
 })

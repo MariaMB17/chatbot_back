@@ -10,9 +10,7 @@ import { Errors } from 'core/interface/interface-error';
 @Injectable()
 export class UsersService {
   
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly profileService: ProfileService){}
+  constructor(private readonly prismaService: PrismaService){}
 
   create(createUserDto: CreateUserDto) {
     return from(bcrypt.hash(

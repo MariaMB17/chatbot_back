@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Session } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
@@ -13,7 +13,7 @@ export class CompaniesController {
   @UseGuards(AuthGuard)
   @Post()
   @ResponseMessage("Compañia guardada con exito!")
-  create(@Body() createCompanyDto: CreateCompanyDto) {
+  create( @Body() createCompanyDto: CreateCompanyDto) {
     return this.companiesService.create(createCompanyDto);
   }
 
