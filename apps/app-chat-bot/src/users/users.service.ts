@@ -4,8 +4,6 @@ import {  catchError, from, map, of, switchMap, tap } from 'rxjs';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 import { User } from '@prisma/client';
-import { ProfileService } from '../profile/profile.service';
-import { Errors } from 'core/interface/interface-error';
 
 @Injectable()
 export class UsersService {

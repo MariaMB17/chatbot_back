@@ -30,7 +30,11 @@ export class CompaniesService {
   async findAll(): Promise<Company[]>  {
     return await this.prismaService.company.findMany({
       include: {
-        member: {},
+        member: {
+          include: {
+            User: {}
+          }
+        },
       },
     });
   }
@@ -41,7 +45,11 @@ export class CompaniesService {
         id,
       },
       include: {
-        member: {},
+        member: {
+          include: {
+            User: {}
+          }
+        },
       },
     });
   }

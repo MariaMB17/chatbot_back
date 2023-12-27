@@ -1,17 +1,21 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { Member } from '@prisma/client';
-import { Observable, catchError, from, lastValueFrom, map, mergeMap, of, tap, toArray } from 'rxjs';
+import { catchError, from, map, mergeMap, of } from 'rxjs';
 import { PrismaService } from '../prisma.service';
 import { UsersService } from '../users/users.service';
-
+import { Member } from './entities/member.entity';
+import { ProfileService } from '../profile/profile.service';
+import { Errors } from 'core/interface/interface-error';
 @Injectable()
 export class MembersService {
 
-  constructor(private readonly userService: UsersService, private readonly prismaService: PrismaService) { }
+  constructor(
+    private readonly userService: UsersService, 
+    private readonly prismaService: PrismaService,
+    private readonly profileService: ProfileService) { }
 
-  async create(createMemberDto: CreateMemberDto[]): Promise<any> {
+  async create(createMemberDto: CreateMemberDto[]): Promise<Member> {
     const dataMember = createMemberDto;
     return from(dataMember).pipe(
       mergeMap(
@@ -23,10 +27,10 @@ export class MembersService {
                 userId: userProfile.user.id
               },
             })).pipe(
-              map((data) => {
+              map((member) => {
                 return {
                   ...dataUser,
-                  data
+                  member
                 }
               }),
               catchError((error) => of({ msg: 'Error al guardar el usuario de la membresia', error, status: HttpStatus.CONFLICT }))
@@ -38,19 +42,57 @@ export class MembersService {
     )    
   }
 
-  findAll() {
-    return `This action returns all members`;
+  async findAll(): Promise<Member[]> {
+    return await this.prismaService.member.findMany({
+      include: {
+        User: {
+          include: {
+            Profile: {}
+          }
+        }
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} member`;
+  async findOne(id: number): Promise<Member>  {
+    return await this.prismaService.member.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        User: {
+          include: {
+            Profile: {}
+          }
+        }
+      },
+    });
   }
 
-  update(id: number, updateMemberDto: UpdateMemberDto) {
-    return `This action updates a #${id} member`;
+  update(id: number, updateMemberDto: UpdateMemberDto[]) {
+    const dataMember = updateMemberDto;
+    return from(dataMember).pipe(
+      mergeMap((item) => 
+        from(this.profileService.update(+item.profile.id, item)).pipe(
+          mergeMap(() => 
+            from(this.prismaService.member.update({
+              where: { id: item.member.id },
+              data: item.member,
+            }))
+          ),
+          map(() => ({ item })),
+          catchError((error) => of({ msg: 'Error al modificar el usuario y la membresia', error, status: HttpStatus.CONFLICT }))
+        )
+      ),
+      catchError((error) => of({ msg: 'Error al modificar los datos', error, status: HttpStatus.CONFLICT }))
+    );  
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} member`;
+  async remove(id: number): Promise<Member>  {
+    return await this.prismaService.member.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
