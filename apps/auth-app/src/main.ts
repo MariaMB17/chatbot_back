@@ -19,7 +19,18 @@ async function bootstrap() {
           durable: false,
         },
       },
-    },
+    },/*{
+      transport: Transport.RMQ,
+      options: {
+        urls: [
+          'amqps://suzhaeoo:nXe5NWVYBSnfQmXCLY2cwnAOB1xOEeSR@##beaver.rmq.cloudamqp.com/suzhaeoo'
+        ],
+        queue: 'users-queue',
+        queueOptions: {
+          durable: false,
+        },
+      },
+    },*/
 );
   await app.listen();
 }

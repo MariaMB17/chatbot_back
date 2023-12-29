@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_CNN")
+}
+
+model Plan {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  cost        Float
+  days        Int
+  invoice     Invoice?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("plans")
+}
+
+model Invoice {
+  id                     String                   @id @default(auto()) @map("_id") @db.ObjectId
+  fecha                  DateTime
+  number                 String                   @unique
+  total                  Float
+  plan                   Plan?                    @relation(fields: [planId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  planId                 String?                  @unique @db.ObjectId
+  PaymentMethodOnInvoice PaymentMethodOnInvoice[]
+  companyId              String
+  currency               Currency?                @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  currencyId             String                   @unique @db.ObjectId
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+
+  @@map("invoices")
+}
+
+model Currency {
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  code               String
+  description        String
+  symbol             String
+  invoice            Invoice?
+  associatedCurrency AssociatedCurrency[]
+  exchangeRate       ExchangeRate?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  @@map("currencies")
+}
+
+model PaymentMethod {
+  id          String                   @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  invoice     PaymentMethodOnInvoice[]
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+
+  @@map("paymentMethods")
+}
+
+model PaymentMethodOnInvoice {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  invoice         Invoice        @relation(fields: [invoiceId], references: [id])
+  invoiceId       String         @db.ObjectId
+  PaymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId String?        @unique @db.ObjectId
+  expirationDate  DateTime
+  bank            String
+  date            DateTime       @default(now())
+  amount          Float
+  numReference    String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@map("paymentMethodsOnInvoices")
+}
+
+model AssociatedCurrency {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  description  String
+  currency     Currency      @relation(fields: [currencyId], references: [id])
+  currencyId   String        @db.ObjectId
+  exchangeRate ExchangeRate?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("associatedCurrencies")
+}
+
+model ExchangeRate {
+  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
+  description        String
+  currencybase       Currency           @relation(fields: [currencyIdbase], references: [id])
+  currencyIdbase     String             @unique @db.ObjectId
+  foreigncurrency    AssociatedCurrency @relation(fields: [foreigncurrencyId], references: [id])
+  foreigncurrencyId  String             @unique @db.ObjectId
+  mountCurrencyBse   Float
+  currencyconversion Float
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@map("exchangeRates")
+}
