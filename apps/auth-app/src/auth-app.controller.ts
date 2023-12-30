@@ -20,9 +20,6 @@ export class AuthAppController {
  
   @EventPattern('evt-login')
   async evtLogin(@Payload() data) {
-    console.log('--------------')
-    console.log(data)
-    console.log('--------------')
     return this.authAppService.evtLogin(data.id,data);
   }
 }

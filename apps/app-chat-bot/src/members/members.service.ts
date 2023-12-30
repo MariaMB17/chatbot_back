@@ -45,7 +45,7 @@ export class MembersService {
   async findAll(): Promise<Member[]> {
     return await this.prismaService.member.findMany({
       include: {
-        User: {
+        user: {
           include: {
             Profile: {}
           }
@@ -60,7 +60,7 @@ export class MembersService {
         id,
       },
       include: {
-        User: {
+        user: {
           include: {
             Profile: {}
           }

@@ -1,28 +1,28 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { PlanService } from './plan.service';
+import { PlanController } from './plan.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { PrismaService } from '../prisma.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [    
-    ClientsModule.register([
+    ClientsModule.register([     
       {
-        name: 'auth-service',
+        name: 'payment-service',
         transport: Transport.RMQ,
         options: {
           urls: [
             'amqps://suzhaeoo:nXe5NWVYBSnfQmXCLY2cwnAOB1xOEeSR@beaver.rmq.cloudamqp.com/suzhaeoo'
           ],
-          queue: 'auth-queue',
+          queue: 'payment-queue',
           queueOptions: {
             durable: false,
           },
         },
-      }
+      },
     ]),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, PrismaService],
+  controllers: [PlanController],
+  providers: [PlanService, JwtService],
 })
-export class AuthModule {}
+export class PlanModule {}

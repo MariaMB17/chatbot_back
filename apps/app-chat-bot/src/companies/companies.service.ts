@@ -32,7 +32,7 @@ export class CompaniesService {
       include: {
         member: {
           include: {
-            User: {}
+            user: {}
           }
         },
       },
@@ -47,7 +47,7 @@ export class CompaniesService {
       include: {
         member: {
           include: {
-            User: {}
+            user: {}
           }
         },
       },

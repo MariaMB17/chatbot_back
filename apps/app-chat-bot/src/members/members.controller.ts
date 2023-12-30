@@ -35,7 +35,7 @@ export class MembersController {
   @Patch(':id')
   @UseGuards(AuthGuard)
   @ResponseMessage("Se modifico el miembro con exito!")
-  update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
+  update(@Param('id') id: string, @Body() updateMemberDto: any/*UpdateMemberDto*/) {
     return this.membersService.update(+id, updateMemberDto);
   }
 
