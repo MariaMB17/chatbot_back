@@ -1,14 +1,13 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import {  catchError, from, map, of, switchMap, tap } from 'rxjs';
-import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma.service';
 import { User } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { catchError, from, map, of, switchMap } from 'rxjs';
+import { MysqlPrismaService } from '../database/mysql-prisma.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  
-  constructor(private readonly prismaService: PrismaService){}
+  constructor(private readonly prismaService: MysqlPrismaService) { }
 
   create(createUserDto: CreateUserDto) {
     return from(bcrypt.hash(
@@ -22,7 +21,7 @@ export class UsersService {
             password: encryptedPassword,
           },
         })).pipe(
-          switchMap((user) => {            
+          switchMap((user) => {
             if (createUserDto.profile) {
               return from(this.prismaService.profile.create({
                 data: {
@@ -41,10 +40,10 @@ export class UsersService {
               return of(null)
             }
           }),
-          catchError((error) => of({ msg: 'No se pudo guardar el usuario', error}))
+          catchError((error) => of({ msg: 'No se pudo guardar el usuario', error }))
         )
       }),
-      catchError((error) => of( { msg: 'Error al guardar el usuario', error, status: HttpStatus.CONFLICT}))
+      catchError((error) => of({ msg: 'Error al guardar el usuario', error, status: HttpStatus.CONFLICT }))
     )
   }
 

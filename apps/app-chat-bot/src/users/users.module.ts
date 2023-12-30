@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { PrismaService } from '../prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { ProfileService } from '../profile/profile.service';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
 
 @Module({
   imports: [
@@ -25,7 +25,11 @@ import { ProfileService } from '../profile/profile.service';
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService, PrismaService, JwtService, ProfileService],
-  exports: [ UsersService ],
+  providers: [
+    UsersService,
+    MysqlPrismaService,
+    JwtService,
+    ProfileService],
+  exports: [UsersService],
 })
-export class UsersModule {}
+export class UsersModule { }

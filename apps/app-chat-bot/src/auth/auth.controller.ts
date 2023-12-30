@@ -1,10 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Session } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto'
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Body, Controller, Inject, Post, Session } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Observable, map, tap } from 'rxjs';
 import { ResponseMessage } from '../message.decorator';
-import { Observable, map, of, tap } from 'rxjs';
+import { CreateAuthDto } from './dto/create-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -13,10 +11,10 @@ export class AuthController {
 
   @Post('signin')
   @ResponseMessage('Inicio de sesión exitoso')
-  login(@Session() sessions: Record<string, any>, @Body() createAuthDto: CreateAuthDto):Observable<any> {
+  login(@Session() sessions: Record<string, any>, @Body() createAuthDto: CreateAuthDto): Observable<any> {
     return this.authMsService.send('evt-login', createAuthDto).pipe(
-      tap((user) => { sessions.userId = user.id } ),
-      map((userResponse) => userResponse )
+      tap((user) => { sessions.userId = user.id }),
+      map((userResponse) => userResponse)
     );
   }
 }

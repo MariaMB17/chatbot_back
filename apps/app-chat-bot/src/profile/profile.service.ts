@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { Profile } from '@prisma/client';
+import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { PrismaService } from '../prisma.service';
-import { Profile, User } from '@prisma/client';
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly prismaService: PrismaService){}
+  constructor(private readonly prismaService: MysqlPrismaService) { }
 
   async create(createProfileDto: CreateProfileDto) {
     let dataP = createProfileDto.profile
     dataP.age = +dataP.age
-   return await this.prismaService.profile.create({
+    return await this.prismaService.profile.create({
       data: dataP,
     })
   }

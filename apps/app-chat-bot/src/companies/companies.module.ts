@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
-import { CompaniesService } from './companies.service';
-import { CompaniesController } from './companies.controller';
-import { PrismaService } from '../prisma.service';
-import { MembersService } from '../members/members.service';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
+import { MysqlPrismaService } from '../database/mysql-prisma.service';
+import { MembersService } from '../members/members.service';
 import { ProfileModule } from '../profile/profile.module';
+import { UsersService } from '../users/users.service';
+import { CompaniesController } from './companies.controller';
+import { CompaniesService } from './companies.service';
 
 @Module({
   imports: [ProfileModule],
   controllers: [CompaniesController],
   providers: [
-    CompaniesService, 
-    PrismaService, 
-    MembersService, 
-    JwtService, 
+    CompaniesService,
+    MysqlPrismaService,
+    MembersService,
+    JwtService,
     UsersService
   ],
 })
-export class CompaniesModule {}
+export class CompaniesModule { }

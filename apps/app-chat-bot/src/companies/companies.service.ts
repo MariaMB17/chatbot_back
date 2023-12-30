@@ -1,14 +1,14 @@
-import { Injectable, Session } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { Company } from '@prisma/client';
+import { MysqlPrismaService } from '../database/mysql-prisma.service';
+import { MembersService } from '../members/members.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { PrismaService } from '../prisma.service';
-import { MembersService } from '../members/members.service';
-import { Company, Member } from '@prisma/client';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private readonly prismaService: PrismaService, public memberService: MembersService) {}
-  
+  constructor(private readonly prismaService: MysqlPrismaService, public memberService: MembersService) { }
+
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const company = await this.prismaService.company.create({
       data: createCompanyDto.company
@@ -23,11 +23,11 @@ export class CompaniesService {
         return item
       })      
       const result = await Promise.all(dataMemb.map((an) => this.memberService.create({"member":{...an}})))
-    }  */  
+    }  */
     return company;
   }
 
-  async findAll(): Promise<Company[]>  {
+  async findAll(): Promise<Company[]> {
     return await this.prismaService.company.findMany({
       include: {
         member: {
@@ -54,7 +54,7 @@ export class CompaniesService {
     });
   }
 
-  async update(id: number, updateCompanyDto: UpdateCompanyDto): Promise<Company>  {
+  async update(id: number, updateCompanyDto: UpdateCompanyDto): Promise<Company> {
     const data = await this.prismaService.company.update({
       where: { id }, data: updateCompanyDto.company,
     });
@@ -64,7 +64,7 @@ export class CompaniesService {
     return data
   }
 
-  async remove(id: number) : Promise<Company> {
+  async remove(id: number): Promise<Company> {
     return await this.prismaService.company.delete({
       where: { id }
     })

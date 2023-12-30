@@ -1,16 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { MembersService } from './members.service';
-import { CreateMemberDto } from './dto/create-member.dto';
-import { UpdateMemberDto } from './dto/update-member.dto';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'apps/auth-app/src/auth.guard';
 import { ResponseMessage } from '../message.decorator';
+import { CreateMemberDto } from './dto/create-member.dto';
+import { MembersService } from './members.service';
 
 @Controller('members')
 export class MembersController {
   constructor(
-    private readonly membersService: MembersService) {}
+    private readonly membersService: MembersService) { }
 
- 
+
   @UseGuards(AuthGuard)
   @Post()
   @ResponseMessage("Miembro guardado con exito!")

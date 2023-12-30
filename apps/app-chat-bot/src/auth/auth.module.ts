@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { PrismaService } from '../prisma.service';
+import { MysqlPrismaService } from '../database/mysql-prisma.service';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 
 @Module({
-  imports: [    
+  imports: [
     ClientsModule.register([
       {
         name: 'auth-service',
@@ -23,6 +23,9 @@ import { PrismaService } from '../prisma.service';
     ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService],
+  providers: [
+    AuthService,
+    MysqlPrismaService
+  ],
 })
-export class AuthModule {}
+export class AuthModule { }
