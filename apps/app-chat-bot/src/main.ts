@@ -1,8 +1,8 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { TransformationInterceptor } from './transformation.interceptor';
+import { NestFactory, Reflector } from '@nestjs/core';
 import * as session from 'express-session';
+import { AppModule } from './app.module';
+import { TransformationInterceptor } from './transformation.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +15,6 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  await app.listen(3001);
+  await app.listen(3002);
 }
 bootstrap();
