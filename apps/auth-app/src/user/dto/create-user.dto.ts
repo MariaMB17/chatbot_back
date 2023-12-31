@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/mysql/client';
 
 export class CreateUserDto {
     user: Prisma.UserCreateInput;

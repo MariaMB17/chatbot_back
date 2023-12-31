@@ -1,7 +1,8 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, UseFilters } from '@nestjs/common';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { catchError, from, map, of, switchMap } from 'rxjs';
+import { AllExceptionFilter } from '../allexceptionsfilter';
 import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
@@ -47,6 +48,7 @@ export class UsersService {
     )
   }
 
+  @UseFilters(AllExceptionFilter)
   async findAll(): Promise<User[]> {
     return await this.prismaService.user.findMany({
       include: {
@@ -55,6 +57,7 @@ export class UsersService {
     });
   }
 
+  @UseFilters(AllExceptionFilter)
   async findOne(id: number): Promise<User> {
     return await this.prismaService.user.findFirst({
       where: {
@@ -68,6 +71,7 @@ export class UsersService {
     });
   }
 
+  @UseFilters(AllExceptionFilter)
   async remove(id: number): Promise<User> {
     return await this.prismaService.user.delete({
       where: { id }

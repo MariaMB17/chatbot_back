@@ -1,19 +1,18 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException, Session } from '@nestjs/common';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
-import { createAuthDto } from './dtos/login.dto';
-import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
+import { HttpStatus, Injectable, Session } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
+import { MysqlPrismaService } from 'apps/app-chat-bot/src/database/mysql-prisma.service';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from './user/dto/create-user.dto';
-import { Prisma, User } from '@prisma/client';
 import { Errors } from 'core/interface/interface-error';
+import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
+import { createAuthDto } from './dtos/login.dto';
 
 @Injectable()
 export class AuthAppService {
   constructor(
-    private readonly prismaService: PrismaService,
+    private readonly prismaService: MysqlPrismaService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async getHello(): Promise<string> {
     console.log('services authhhhh');
@@ -30,31 +29,31 @@ export class AuthAppService {
       where: {
         email: createAuthDto.email,
       },
-    })).pipe(      
+    })).pipe(
       switchMap((user) => {
-        if(user) {
+        if (user) {
           return from(bcrypt.compare(createAuthDto.password, user.password))
             .pipe(
               map(passwordIsCorrect => passwordIsCorrect),
-              switchMap((passwordIsMatch) => {               
-                if(passwordIsMatch) {
+              switchMap((passwordIsMatch) => {
+                if (passwordIsMatch) {
                   const payload = createAuthDto;
                   return from(this.jwtService.signAsync(payload)).pipe(
                     map((access_token) => {
                       return {
                         ...user,
-                            access_token
+                        access_token
                       };
                     })
                   );
                 } else {
-                  return of({ msg:'Contraseña incorrecta', status: HttpStatus.UNAUTHORIZED });
+                  return of({ msg: 'Contraseña incorrecta', status: HttpStatus.UNAUTHORIZED });
                 }
               }),
-             catchError((error) => of({ msg: 'password no coincide', error, status: HttpStatus.UNAUTHORIZED }))
+              catchError((error) => of({ msg: 'password no coincide', error, status: HttpStatus.UNAUTHORIZED }))
             );
         } else {
-          return of({ msg: 'No existe usuario registrado en nuestra bd con ese email', status: HttpStatus.NOT_FOUND});
+          return of({ msg: 'No existe usuario registrado en nuestra bd con ese email', status: HttpStatus.NOT_FOUND });
         }
       }),
       catchError((error) => of({ msg: 'error al iniciar sesion', error, status: HttpStatus.CONFLICT }))

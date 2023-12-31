@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { MysqlPrismaService } from 'apps/app-chat-bot/src/database/mysql-prisma.service';
 import { AuthAppController } from './auth-app.controller';
 import { AuthAppService } from './auth-app.service';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -14,6 +13,6 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   ],
   controllers: [AuthAppController],
-  providers: [AuthAppService, PrismaService],
+  providers: [AuthAppService, MysqlPrismaService],
 })
-export class AuthAppModule {}
+export class AuthAppModule { }

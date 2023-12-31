@@ -1,8 +1,8 @@
 import {
-    CallHandler,
-    ExecutionContext,
-    Injectable,
-    NestInterceptor,
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable, map } from 'rxjs';
@@ -17,24 +17,45 @@ export interface Response<T> {
 export class TransformationInterceptor<T>
   implements NestInterceptor<T, Response<T>>
 {
-  constructor(private reflector: Reflector) {}
-  
+  constructor(private reflector: Reflector) { }
   intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<Response<T>> {
     return next.handle().pipe(
-      map((data) => ({
-        message:
-          this.reflector.get<string>(
-            'response_message',
-            context.getHandler(),
-          ) ||
-          data.message ||
-          '',
-        statusCode: context.switchToHttp().getResponse().statusCode,
-        data: data.result || data,
-      })),
+      map((data) => {
+        if (Array.isArray(data) && data.length === 0) {
+          return {
+            message: 'data is an empty array',
+            statusCode: context.switchToHttp().getResponse().statusCode,
+            data: [],
+          };
+        } else if (data === null) {
+          return {
+            message: 'data is null',
+            statusCode: context.switchToHttp().getResponse().statusCode,
+            data: null,
+          };
+        } else if (data === undefined) {
+          return {
+            message: 'data is undefined',
+            statusCode: context.switchToHttp().getResponse().statusCode,
+            data: undefined,
+          };
+        } else {
+          return {
+            message:
+              this.reflector.get<string>(
+                'response_message',
+                context.getHandler(),
+              ) ||
+              data.message ||
+              '',
+            statusCode: context.switchToHttp().getResponse().statusCode,
+            data: data.result || data,
+          };
+        }
+      }),
     );
   }
 }
