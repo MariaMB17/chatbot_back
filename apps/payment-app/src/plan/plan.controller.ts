@@ -19,9 +19,12 @@ export class PlanController {
     );
   }
 
-  @MessagePattern('findAllPlan')
+  @EventPattern('findAllPlan')
   findAll() {
-    return this.planService.findAll();
+    return this.planService.findAll().pipe(
+      map((listPlan) => listPlan),
+      catchError((error) => of({ msg: 'error al listar los planes', error, status: HttpStatus.CONFLICT }))
+    );
   }
 
   @MessagePattern('findOnePlan')

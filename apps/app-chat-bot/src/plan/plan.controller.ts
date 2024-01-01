@@ -18,10 +18,12 @@ export class PlanController {
     return this.paymentMsService.send('createPlan', createPlanDto)
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.planService.findAll();
-  // }
+  @Get()
+  @UseGuards(AuthGuard)
+  @ResponseMessage('Listado de planes')
+  findAll() {
+    return this.paymentMsService.send('findAllPlan', '');
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

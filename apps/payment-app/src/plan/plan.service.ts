@@ -14,8 +14,19 @@ export class PlanService {
     }));
   }
 
-  findAll() {
-    return `This action returns all plan`;
+  findAll(): Observable<Plan[]> {
+    return from(this.prismaService.plan.findMany({
+      include: {
+        member: {
+          include: {
+            user: {}
+          }
+        },
+        invoice: {
+          
+        }
+      }
+    }))
   }
 
   findOne(id: number) {
