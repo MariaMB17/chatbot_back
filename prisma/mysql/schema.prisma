@@ -9,13 +9,12 @@ datasource db {
 }
 
 model Bot {
-  id           String       @id @default(uuid())
-  namebot      String       @unique
+  id           String  @id @default(uuid())
+  namebot      String  @unique
   descriptcion String
   model        String
   personality  String
   nicknamebot  String
-  knowledge    Knowledge[]
   @@map("Bots")
 }
 
@@ -23,8 +22,6 @@ model Knowledge {
   id            String           @id @default(uuid())
   description   String           @unique
   knowledgeBase KnowledgeBase[]
-  bot           Bot             @relation(fields: [bot_id], references:[id])
-  bot_id        String
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   @@map("knowledges")

@@ -2,12 +2,12 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
-  ExecutionContext,
   HttpException,
+  HttpStatus
 } from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
-  PrismaClientValidationError,
+  PrismaClientValidationError
 } from '@prisma/client/runtime/library';
 
 @Catch()
@@ -23,7 +23,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    const executionContext = host.switchToRpc().getContext<ExecutionContext>();
+    console.log(exception);
 
     let status = 500;
     let message: string = exception.message;
@@ -36,8 +36,8 @@ export class AllExceptionFilter implements ExceptionFilter {
       exception.name === 'PrismaClientValidationError' ||
       exception.name === 'PrismaClientKnownRequestError'
     ) {
-      status = 400;
-      message = exception.message;
+      status = HttpStatus.CONFLICT
+      message = JSON.stringify(exception)
     }
 
     const errorResponse = {
@@ -46,10 +46,11 @@ export class AllExceptionFilter implements ExceptionFilter {
       error: message
         .substring(message.indexOf('\n'))
         .replace(/\n{2,}/g, '\n')
+        .replace(/\\"/g, '"')
         .replace(/\n{1,}/g, '')
         .trim(),
-      executionContext: executionContext, // Agregado al objeto de respuesta
     };
     response.status(status).json(errorResponse);
   }
 }
+
