@@ -1,46 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { ClientProxy } from '@nestjs/microservices';
 import { AuthGuard } from 'apps/auth-app/src/auth.guard';
 import { ResponseMessage } from '../message.decorator';
+import { Observable, map } from 'rxjs';
+import { Member } from './entities/member.entity';
 
 @Controller('members')
 export class MembersController {
-  constructor(
-    private readonly membersService: MembersService) {}
+  constructor(@Inject('member-service') private memberMsService: ClientProxy) {}
 
- 
-  @UseGuards(AuthGuard)
   @Post()
-  @ResponseMessage("Miembro guardado con exito!")
-  create(@Body() createMemberDto: CreateMemberDto[]) {
-    return this.membersService.create(createMemberDto);
+  @UseGuards(AuthGuard)
+  @ResponseMessage('Miembro creado con exito')
+  create(@Body() createMemberDto: CreateMemberDto): Observable<Member> {
+    return this.memberMsService.send('createMember', createMemberDto).pipe(
+      map((dataMember: any) => {
+        if(dataMember?.error) {
+          console.log(dataMember.meta)
+        }
+        return dataMember        
+      })
+    );
   }
 
-  @UseGuards(AuthGuard)
   @Get()
-  @ResponseMessage("Listado de miembros!")
-  findAll() {
-    return this.membersService.findAll();
+  @UseGuards(AuthGuard)
+  @ResponseMessage('Listado de mienbros')  
+  findAll(): Observable<Member[]> {
+    return this.memberMsService.send('findAllMembers', '')
   }
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  @ResponseMessage("Informacion del miembro!")
-  findOne(@Param('id') id: string) {
-    return this.membersService.findOne(+id);
+  @ResponseMessage('Miembro encontrado con exito') 
+  findOne(@Param('id') id: string): Observable<Member>  {
+    return this.memberMsService.send('findOneMember', +id);
   }
 
-  @Patch(':id')
+  @Patch()
   @UseGuards(AuthGuard)
-  @ResponseMessage("Se modifico el miembro con exito!")
-  update(@Param('id') id: string, @Body() updateMemberDto: any/*UpdateMemberDto*/) {
-    return this.membersService.update(+id, updateMemberDto);
+  @ResponseMessage('Miembro modificado con exito') 
+  update(@Body() updateMemberDto: UpdateMemberDto) {
+    return this.memberMsService.send('updateMember', updateMemberDto.member);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
+  @ResponseMessage('Miembro eliminado con exito')
   remove(@Param('id') id: string) {
-    return this.membersService.remove(+id);
+    return this.memberMsService.send('removeMember', +id);
   }
 }

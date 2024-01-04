@@ -13,6 +13,9 @@ async function bootstrap() {
       secret: process.env.SECRET_KEY,
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        maxAge: 60 * 60 * 1000,
+      },
     }),
   );
   await app.listen(3001);

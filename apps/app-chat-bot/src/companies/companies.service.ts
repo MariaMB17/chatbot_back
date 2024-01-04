@@ -2,12 +2,11 @@ import { Injectable, Session } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { PrismaService } from '../prisma.service';
-import { MembersService } from '../members/members.service';
 import { Company, Member } from '@prisma/client';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private readonly prismaService: PrismaService, public memberService: MembersService) {}
+  constructor(private readonly prismaService: PrismaService) {}
   
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const company = await this.prismaService.company.create({

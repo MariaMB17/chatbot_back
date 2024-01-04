@@ -1,19 +1,28 @@
 import { Module } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { MembersController } from './members.controller';
-import { PrismaService } from '../prisma.service';
-import { ProfileService } from '../profile/profile.service';
-import { UsersService } from '../users/users.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
-  providers: [ 
-    MembersService, 
-    PrismaService, 
-    UsersService, 
-    ProfileService,
-    JwtService 
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'member-service',
+        transport: Transport.RMQ,
+        options: {
+          urls: [
+            'amqps://suzhaeoo:nXe5NWVYBSnfQmXCLY2cwnAOB1xOEeSR@beaver.rmq.cloudamqp.com/suzhaeoo'
+          ],
+          queue: 'payment-queue',
+          queueOptions: {
+            durable: false,
+          },
+        },
+      },
+    ]),
   ],
   controllers: [MembersController],
+  providers: [MembersService, JwtService],
 })
-export class MembersModule {}
+export class MembersModule { }

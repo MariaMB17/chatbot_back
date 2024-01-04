@@ -4,8 +4,9 @@ import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { ResponseMessage } from '../message.decorator';
-import { catchError, tap } from 'rxjs';
+import { Observable, catchError, map, tap } from 'rxjs';
 import { AuthGuard } from 'apps/auth-app/src/auth.guard';
+import { Plan } from './entities/plan.entity';
 
 @Controller('plan')
 export class PlanController {
@@ -14,29 +15,35 @@ export class PlanController {
   @Post()
   @UseGuards(AuthGuard)
   @ResponseMessage('Plan creado con exito')
-  create(@Session() sessions: Record<string, any>, @Body() createPlanDto: CreatePlanDto) {
+  create(@Session() sessions: Record<string, any>, @Body() createPlanDto: CreatePlanDto): Observable<Plan> {
     return this.paymentMsService.send('createPlan', createPlanDto)
   }
 
   @Get()
   @UseGuards(AuthGuard)
   @ResponseMessage('Listado de planes')
-  findAll() {
+  findAll(): Observable<Plan[]> {
     return this.paymentMsService.send('findAllPlan', '');
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.planService.findOne(+id);
-  // }
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  @ResponseMessage('Plan encontrado con exito')
+  findOne(@Param('id') id: string): Observable<Plan> {    
+    return this.paymentMsService.send('findOnePlan', +id);
+  }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updatePlanDto: UpdatePlanDto) {
-  //   return this.planService.update(+id, updatePlanDto);
-  // }
+  @Patch()
+  @UseGuards(AuthGuard)
+  @ResponseMessage('Plan fue modificado con exito')
+  update(@Body() updatePlanDto: UpdatePlanDto): Observable<Plan> {
+    return this.paymentMsService.send('updatePlan', updatePlanDto)
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.planService.remove(+id);
-  // }
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  @ResponseMessage('Plan fue eliminado con exito')
+  remove(@Param('id') id: string) {
+    return this.paymentMsService.send('removePlan', +id);
+  }
 }
