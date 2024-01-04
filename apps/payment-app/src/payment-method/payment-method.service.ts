@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePaymentMethodDto } from './dto/create-payment-method.dto';
 import { UpdatePaymentMethodDto } from './dto/update-payment-method.dto';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 import { PaymentMethod } from './entities/payment-method.entity';
 import { Observable, from } from 'rxjs';
 

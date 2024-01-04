@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthAppController } from './auth-app.controller';
 import { AuthAppService } from './auth-app.service';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
+import { PrismaService } from '@Appchatbot/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { JwtModule } from '@nestjs/jwt';
 

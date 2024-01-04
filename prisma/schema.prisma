@@ -147,8 +147,8 @@ model AssociatedCurrency {
 model ExchangeRate {
   id                 Int                @id @default(autoincrement())
   description        String
-  currencybase       Currency           @relation(fields: [currencyIdbase], references: [id])
-  currencyIdbase     Int                @unique
+  currencybase       Currency           @relation(fields: [currencyIdbaseId], references: [id])
+  currencyIdbaseId   Int                @unique
   foreigncurrency    AssociatedCurrency @relation(fields: [foreigncurrencyId], references: [id])
   foreigncurrencyId  Int                @unique
   mountCurrencyBse   Decimal            @db.Decimal(10, 2)

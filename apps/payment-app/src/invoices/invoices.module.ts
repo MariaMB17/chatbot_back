@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
 import { InvoicesController } from './invoices.controller';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 
 @Module({
   controllers: [InvoicesController],

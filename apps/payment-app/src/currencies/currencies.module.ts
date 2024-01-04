@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CurrenciesService } from './currencies.service';
 import { CurrenciesController } from './currencies.controller';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 
 @Module({
   controllers: [CurrenciesController],

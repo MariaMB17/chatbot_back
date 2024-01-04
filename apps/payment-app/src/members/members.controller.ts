@@ -5,7 +5,6 @@ import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { Member } from './entities/member.entity';
 import { Observable, catchError, from, map, of, tap } from 'rxjs';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
 import { CompaniesService } from 'apps/app-chat-bot/src/companies/companies.service';
 import { Errors } from 'core/interface/interface-error';
 

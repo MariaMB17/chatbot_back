@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { Observable, from } from 'rxjs';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 import { Member } from './entities/member.entity';
 
 @Injectable()

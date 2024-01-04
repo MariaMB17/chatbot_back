@@ -3,7 +3,7 @@ import { CreateCurrencyDto } from './dto/create-currency.dto';
 import { UpdateCurrencyDto } from './dto/update-currency.dto';
 import { Observable, from } from 'rxjs';
 import { Currency } from './entities/currency.entity';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 
 @Injectable()
 export class CurrenciesService {

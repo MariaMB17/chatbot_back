@@ -10,9 +10,6 @@ export class UserController {
 
   @MessagePattern('create-user')
   async createUser(@Payload() data) {
-    console.log('--------------')
-    console.log(data)
-    console.log('--------------')
     return this.userService.createUser(data);
   }
 

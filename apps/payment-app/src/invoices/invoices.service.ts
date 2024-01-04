@@ -3,7 +3,7 @@ import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { Observable, from } from 'rxjs';
 import { Invoice } from '@prisma/client';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 
 @Injectable()
 export class InvoicesService {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAssociatedCurrencyDto } from './dto/create-associated-currency.dto';
 import { UpdateAssociatedCurrencyDto } from './dto/update-associated-currency.dto';
-import { PrismaService } from 'apps/app-chat-bot/src/prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 import { Observable, from } from 'rxjs';
 import { AssociatedCurrency } from './entities/associated-currency.entity';
 
