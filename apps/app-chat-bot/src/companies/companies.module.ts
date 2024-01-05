@@ -17,5 +17,6 @@ import { CompaniesService } from './companies.service';
     JwtService,
     UsersService
   ],
+  exports: [CompaniesService]
 })
 export class CompaniesModule { }

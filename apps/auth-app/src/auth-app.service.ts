@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 import { HttpStatus, Injectable, Session } from '@nestjs/common';
+=======
+import { HttpException, HttpStatus, Injectable, NotFoundException, Session } from '@nestjs/common';
+import { PrismaService } from '@PrismaServiceMysql';
+import { createAuthDto } from './dtos/login.dto';
+import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
+>>>>>>> main
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/mysql/client';
 import { MysqlPrismaService } from 'apps/app-chat-bot/src/database/mysql-prisma.service';
@@ -15,13 +22,11 @@ export class AuthAppService {
   ) { }
 
   async getHello(): Promise<string> {
-    console.log('services authhhhh');
     return 'Hello World! desde mensaje';
   }
 
   async getGoodbye(message: string): Promise<void> {
-    console.log('services mettodo getGoodbye');
-    console.log(message);
+    /*console.log(message);*/
   }
 
   async evtLogin(@Session() session: Record<string, any>, createAuthDto: createAuthDto): Promise<Observable<User | Errors>> {

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { catchError, from, map, mergeMap, of } from 'rxjs';
 import { MysqlPrismaService } from '../database/mysql-prisma.service';
@@ -95,3 +96,11 @@ export class MembersService {
     });
   }
 }
+=======
+import { Injectable } from '@nestjs/common';
+import { CreateMemberDto } from './dto/create-member.dto';
+import { UpdateMemberDto } from './dto/update-member.dto';
+
+@Injectable()
+export class MembersService {}
+>>>>>>> main

@@ -13,17 +13,6 @@ export class CompaniesService {
     const company = await this.prismaService.company.create({
       data: createCompanyDto.company
     })
-    /*console.log(session.userId)
-    if(company?.id) {
-      const { id } = company
-      let memberData = createCompanyDto.member
-      const dataMemb = memberData.map((item: any) => {
-        item.companyId = id
-        item.userId = session.userId
-        return item
-      })      
-      const result = await Promise.all(dataMemb.map((an) => this.memberService.create({"member":{...an}})))
-    }  */
     return company;
   }
 

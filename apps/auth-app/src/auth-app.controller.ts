@@ -13,8 +13,6 @@ export class AuthAppController {
 
   @MessagePattern('get-hello')
   async getHello() {
-    console.log('linea 15')
-    console.log('get--helloooooo')
     return this.authAppService.getHello();
   }
  

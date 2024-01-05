@@ -3,6 +3,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { MysqlPrismaService } from 'apps/app-chat-bot/src/database/mysql-prisma.service';
 import { AuthAppController } from './auth-app.controller';
 import { AuthAppService } from './auth-app.service';
+<<<<<<< HEAD
+=======
+import { PrismaService } from '@Appchatbot/prisma.service';
+import { JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
+>>>>>>> main
 
 @Module({
   imports: [
