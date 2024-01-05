@@ -35,45 +35,54 @@ export class KnowledgeService {
   @UseFilters(AllExceptionFilter)
   async create(createKnowledgeDto: CreateKnowledgeDto): Promise<Knowledge | null> {
 
-    const knowledge = await this.prismaService.knowledge.create({
+    const result = await this.prismaService.knowledge.create({
       data: { ...createKnowledgeDto.knowledge }
     });
 
     const objetoMemberOnKnowledge = {
       member_id: createKnowledgeDto.member_id,
-      knowledge_id: knowledge.id
+      knowledge_id: result.id
     }
     await this.prismaService.memberOnKnowledge.create({
       data: { ...objetoMemberOnKnowledge }
     })
 
-    return knowledge
+    return result
   }
 
   @UseFilters(AllExceptionFilter)
   async findAll(): Promise<Knowledge[]> {
-    return await this.prismaService.knowledge.findMany();
+    const result = await this.prismaService.knowledge.findMany();
+    return result
   }
 
   @UseFilters(AllExceptionFilter)
   async findOne(id: number): Promise<Knowledge> {
-    return await this.prismaService.knowledge.findUnique({ where: { id } });
+    const result = await this.prismaService.knowledge.findUnique({
+      where: { id }
+    });
+    return result
   }
 
   @UseFilters(AllExceptionFilter)
   async update(id: number, updateKnowledgeDto:
     UpdateKnowledgeDto): Promise<Knowledge> {
-    return await this.prismaService.knowledge.update({
-      where: { id },
-      data: {
-        ...updateKnowledgeDto.knowledge,
-      },
-    });
+    const result =
+      await this.prismaService.knowledge.update({
+        where: { id },
+        data: {
+          ...updateKnowledgeDto.knowledge,
+        },
+      });
+    return result
   }
 
   @UseFilters(AllExceptionFilter)
   async remove(id: number): Promise<Knowledge> {
-    return await this.prismaService.knowledge.delete({ where: { id } });
+    const result = await this.prismaService.knowledge.delete({
+      where: { id }
+    });
+    return result
   }
 
   @UseFilters(AllExceptionFilter)

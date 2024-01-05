@@ -21,20 +21,20 @@ export class KnowledgeController {
   constructor(private readonly knowledgeService: KnowledgeService) { }
 
   @Post()
-  @ResponseMessage('Base de Conocimiento')
+  @ResponseMessage('Registro Creado')
   create(
     @Body() createKnowledgeDto: CreateKnowledgeDto) {
     return this.knowledgeService.create(createKnowledgeDto);
   }
 
   @Get()
-  @ResponseMessage('Listado de Registros')
+  @ResponseMessage('Consulta General')
   findAll() {
     return this.knowledgeService.findAll();
   }
 
   @Get(':id')
-  @ResponseMessage('Registro Encontrado')
+  @ResponseMessage('Registro Especifico')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.knowledgeService.findOne(id);
   }

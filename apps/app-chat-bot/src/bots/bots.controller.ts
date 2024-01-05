@@ -1,9 +1,11 @@
+import { ResponseMessage } from '@Appchatbot/message.decorator';
 import {
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post
 } from '@nestjs/common';
@@ -16,27 +18,30 @@ export class BotsController {
   constructor(private readonly botsService: BotsService) { }
 
   @Post()
+  @ResponseMessage('Registro Creado')
   create(@Body() createBotDto: CreateBotDto) {
     return this.botsService.create(createBotDto);
   }
 
   @Get()
+  @ResponseMessage('Consulta General')
   findAll() {
     return this.botsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.botsService.findOne(+id);
+  @ResponseMessage('Registro Especifico')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.botsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBotDto: UpdateBotDto) {
-    return this.botsService.update(+id, updateBotDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateBotDto: UpdateBotDto) {
+    return this.botsService.update(id, updateBotDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.botsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.botsService.remove(id);
   }
 }

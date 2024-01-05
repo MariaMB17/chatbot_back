@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { AllExceptionFilter } from '@Appchatbot/allexceptionsfilter';
+import { Injectable, UseFilters } from '@nestjs/common';
 import { Bot } from '@prisma/mysql/client';
 import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { CreateBotDto } from './dto/create-bot.dto';
@@ -11,12 +12,12 @@ export class BotsService {
   async create(createBotDto: CreateBotDto): Promise<Bot> {
     const member_id = createBotDto.member_id;
 
-    const bot = await this.prismaService.bot.create({
+    const result = await this.prismaService.bot.create({
       data: { ...createBotDto.bot }
     })
 
     const knowledgeOnBot = createBotDto.knowledgeIds.map((knowledge_id) => {
-      return { bot_id: bot.id, knowledge_id };
+      return { bot_id: result.id, knowledge_id };
     });
 
     await this.prismaService.knowledgeOnBot.createMany({
@@ -25,37 +26,46 @@ export class BotsService {
 
     await this.prismaService.memberOnBot.create({
       data: {
-        bot_id: bot.id,
+        bot_id: result.id,
         member_id
       }
     })
 
     // Log item: "bot"
-    const objetoMemberLog = {
+    const objetMemberLog = {
       item: "Bot",
       counter: 1,
       member_id
     };
 
     await this.prismaService.memberLog.create({
-      data: { ...objetoMemberLog }
+      data: { ...objetMemberLog }
     })
-    return bot
+    return result
   }
 
-  findAll() {
-    return `This action returns all bots`;
+  @UseFilters(AllExceptionFilter)
+  async findAll(): Promise<Bot[]> {
+    const result = await this.prismaService.bot.findMany();
+    return result
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bot`;
+  @UseFilters(AllExceptionFilter)
+  async findOne(id: number): Promise<Bot> {
+    const result = this.prismaService.bot.findFirst({
+      where: { id }
+    })
+    return result;
   }
 
   update(id: number, updateBotDto: UpdateBotDto) {
     return `This action updates a #${id} bot`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bot`;
+  remove(id: number): Promise<Bot> {
+    const result = this.prismaService.bot.delete({
+      where: { id }
+    })
+    return result;
   }
 }
