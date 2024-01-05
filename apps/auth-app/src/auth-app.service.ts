@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, Session } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { User } from '@prisma/mysql/client';
 import { MysqlPrismaService } from 'apps/app-chat-bot/src/database/mysql-prisma.service';
 import * as bcrypt from 'bcrypt';
 import { Errors } from 'core/interface/interface-error';

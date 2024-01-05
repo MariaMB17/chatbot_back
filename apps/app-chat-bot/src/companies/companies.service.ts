@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Company } from '@prisma/client';
+import { Company } from '@prisma/mysql/client';
 import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { MembersService } from '../members/members.service';
 import { CreateCompanyDto } from './dto/create-company.dto';

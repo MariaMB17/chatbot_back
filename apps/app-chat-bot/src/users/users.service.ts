@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, UseFilters } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { User } from '@prisma/mysql/client';
 import * as bcrypt from 'bcrypt';
 import { catchError, from, map, of, switchMap } from 'rxjs';
 import { AllExceptionFilter } from '../allexceptionsfilter';

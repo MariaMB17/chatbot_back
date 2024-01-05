@@ -15,7 +15,6 @@ CREATE TABLE `Bots` (
 CREATE TABLE `knowledges` (
     `id` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
-    `bot_id` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -199,9 +198,6 @@ CREATE TABLE `exchangeRates` (
     UNIQUE INDEX `exchangeRates_foreigncurrencyId_key`(`foreigncurrencyId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- AddForeignKey
-ALTER TABLE `knowledges` ADD CONSTRAINT `knowledges_bot_id_fkey` FOREIGN KEY (`bot_id`) REFERENCES `Bots`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `knowledgeBases` ADD CONSTRAINT `knowledgeBases_knowledge_id_fkey` FOREIGN KEY (`knowledge_id`) REFERENCES `knowledges`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

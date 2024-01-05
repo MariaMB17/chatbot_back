@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Profile } from '@prisma/client';
+import { Profile } from '@prisma/mysql/client';
 import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
