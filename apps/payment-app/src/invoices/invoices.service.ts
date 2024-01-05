@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { Observable, from } from 'rxjs';
-import { Invoice } from '@prisma/client';
-import { PrismaService } from '@PrismaServiceMysql';
+import { Invoice } from '@prisma/mysql/client';
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 
 @Injectable()
 export class InvoicesService {
-  constructor(private readonly prsmaService:  PrismaService) {}
+  constructor(private readonly prsmaService:  MysqlPrismaService) {}
   create(createInvoiceDto: CreateInvoiceDto): Observable<Invoice>  {
     return from(this.prsmaService.invoice.create({
       data: createInvoiceDto.invoice

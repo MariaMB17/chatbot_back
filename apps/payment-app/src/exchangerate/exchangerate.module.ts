@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ExchangerateService } from './exchangerate.service';
 import { ExchangerateController } from './exchangerate.controller';
-import { PrismaService } from '@PrismaServiceMysql';
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 
 @Module({
   controllers: [ExchangerateController],
-  providers: [ExchangerateService, PrismaService],
+  providers: [ExchangerateService, MysqlPrismaService],
 })
 export class ExchangerateModule {}

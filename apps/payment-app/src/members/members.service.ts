@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { Observable, from } from 'rxjs';
-import { PrismaService } from '@PrismaServiceMysql';
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 import { Member } from './entities/member.entity';
 
 @Injectable()
 export class MembersService {
-  constructor(private readonly prismaService: PrismaService){}
+  constructor(private readonly prismaService: MysqlPrismaService){}
   create(createMemberDto: CreateMemberDto): Observable<Member> {
     return from(this.prismaService.member.create({
       data: createMemberDto.member

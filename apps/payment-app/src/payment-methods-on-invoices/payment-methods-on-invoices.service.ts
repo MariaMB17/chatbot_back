@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePaymentMethodsOnInvoiceDto } from './dto/create-payment-methods-on-invoice.dto';
 import { UpdatePaymentMethodsOnInvoiceDto } from './dto/update-payment-methods-on-invoice.dto';
-import { PrismaService } from '@PrismaServiceMysql';
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 import { Observable, from } from 'rxjs';
 import { PaymentMethod } from '../payment-method/entities/payment-method.entity';
 
 @Injectable()
 export class PaymentMethodsOnInvoicesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: MysqlPrismaService) {}
   create(createPaymentMethodsOnInvoiceDto: CreatePaymentMethodsOnInvoiceDto):Observable<PaymentMethod> {
     return from(this.prismaService.paymentMethodOnInvoice.create({
       data: createPaymentMethodsOnInvoiceDto.paymentMethodsOnInvoice
