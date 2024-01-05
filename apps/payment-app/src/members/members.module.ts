@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
-import { MembersService } from './members.service';
-import { MembersController } from './members.controller';
-import { PrismaService } from '@PrismaServiceMysql';
 import { CompaniesModule } from '@Appchatbot/companies/companies.module';
+import { MysqlPrismaService } from '@PrismaServiceMysql';
+import { Module } from '@nestjs/common';
+import { MembersController } from './members.controller';
+import { MembersService } from './members.service';
 
 @Module({
   imports: [CompaniesModule],
   controllers: [MembersController],
-  providers: [MembersService, PrismaService],
+  providers: [MembersService, MysqlPrismaService],
 })
-export class MembersModule {}
+export class MembersModule { }

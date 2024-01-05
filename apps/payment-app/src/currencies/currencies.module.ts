@@ -1,10 +1,11 @@
+
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Module } from '@nestjs/common';
-import { CurrenciesService } from './currencies.service';
 import { CurrenciesController } from './currencies.controller';
-import { PrismaService } from '@PrismaServiceMysql';
+import { CurrenciesService } from './currencies.service';
 
 @Module({
   controllers: [CurrenciesController],
-  providers: [CurrenciesService, PrismaService],
+  providers: [CurrenciesService, MysqlPrismaService],
 })
-export class CurrenciesModule {}
+export class CurrenciesModule { }

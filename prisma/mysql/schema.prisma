@@ -8,50 +8,119 @@ datasource db {
   url      = env("MYSQL_DATABASE_URL")
 }
 
-model Bot {
-  id           String  @id @default(uuid())
-  namebot      String  @unique
-  descriptcion String
-  model        String
-  personality  String
-  nicknamebot  String
-  @@map("Bots")
+model KnowledgeOnBot {
+  bot          Bot       @relation(fields: [bot_id], references: [id])
+  bot_id       Int
+  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id])
+  knowledge_id Int
+  @@id([bot_id,knowledge_id])
+  @@map("knowledgenbots")
 }
 
+model Bot {
+  id             Int               @id @default(autoincrement())
+  name           String
+  description    String
+  modelgpt       String
+  personality    String?
+  nickname       String
+  memberOnBot    MemberOnBot[]
+  knowledgeOnBot KnowledgeOnBot[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  @@map("bots")
+}
+
+model MemberOnBot {
+  id        Int     @id @default(autoincrement())
+  member    Member @relation(fields: [member_id], references: [id])
+  member_id Int
+  bot       Bot    @relation(fields: [bot_id], references: [id])
+  bot_id    Int
+  @@map("memberonbots")
+}
+
+model MemberOnKnowledge {
+  id           Int        @id @default(autoincrement())
+  member       Member    @relation(fields: [member_id], references: [id])
+  member_id    Int
+  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id])
+  knowledge_id Int
+  @@map("memberonknowledges")
+}
+
+// Item = ('Credit', 'Document', 'Bot', 'Member')
+model MemberLog {
+  id        Int       @id @default(autoincrement())
+  item      String
+  counter   Int
+  member    Member   @relation(fields: [member_id], references: [id])
+  member_id Int
+  createdAt DateTime  @default(now())
+  @@map("memberlogs")
+}
+
+model Member {
+  id                Int                  @id @default(autoincrement())
+  user              User?               @relation(fields: [userId], references: [id])
+  userId            Int                  @unique
+  company           Company             @relation(fields: [companyId], references: [id])
+  companyId         Int
+  plan              Plan                @relation(fields: [planId], references: [id])
+  planId            Int
+  memberOnKnowledge MemberOnKnowledge[]
+  memberOnBot       MemberOnBot[]
+  memberLog         MemberLog[]
+  role              String               @default("ADMIN")
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  @@map("members")
+}
+// model Member {
+//   id        Int       @id @default(autoincrement())
+//   companyId Int
+//   userId    Int       @unique
+//   planId    Int       @unique
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+//   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   plan      Plan?    @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+//   @@map("members")
+// }
 model Knowledge {
-  id            String           @id @default(uuid())
-  description   String           @unique
-  knowledgeBase KnowledgeBase[]
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
+  id                Int                  @id @default(autoincrement())
+  description       String
+  knowledgeBase     KnowledgeBase[]
+  memberOnKnowledge MemberOnKnowledge[]
+  knowledgeOnBot    KnowledgeOnBot[]
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
   @@map("knowledges")
 }
 
 model KnowledgeBase {
-  id            String           @id @default(uuid())
+  id            Int              @id @default(autoincrement())
   originalname  String
   mimetype      String
-  textContent   String
-  knowledge     Knowledge       @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
-  knowledge_id  String
-  knowledgeBase KnowledgeFile[]
+  textContent   String           @db.LongText
+  knowledge     Knowledge       @relation(fields: [knowledge_id], references: [id],onDelete: Cascade)
+  knowledge_id  Int
+  knowledgeFile KnowledgeFile[]
   createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  @@map("knowledgeBases")
+  @@map("knowledgebases")
 }
 
 model KnowledgeFile {
-  id               String         @id @default(uuid())
+  id               Int            @id @default(autoincrement())
   asset_id         String
   public_id        String
   secure_url       String
   knowledgeBase    KnowledgeBase @relation(fields: [knowledgeBase_id], references: [id], onDelete: Cascade)
-  knowledgeBase_id String
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  @@map("knowledgeFiles")
+  knowledgeBase_id Int
+  @@map("knowledgefiles")
 }
-
 model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique
@@ -92,32 +161,34 @@ model Company {
   @@map("companies")
 }
 
-model Member {
-  id        Int       @id @default(autoincrement())
-  companyId Int
-  userId    Int       @unique
-  planId    Int       @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan      Plan?    @relation(fields: [planId], references: [id], onDelete: Cascade)
-
-  @@map("members")
-}
-
 model Plan {
   id          Int       @id @default(autoincrement())
+  name        String
   description String
   cost        Decimal   @db.Decimal(10, 2)
-  days        Int
+  credits     Int
+  bots        Int
+  documents   Int
+  members     Int
   invoice     Invoice?
-  member      Member?
+  member      Member[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-
   @@map("plans")
 }
+
+// model Plan {
+//   id          Int       @id @default(autoincrement())
+//   description String
+//   cost        Decimal   @db.Decimal(10, 2)
+//   days        Int
+//   invoice     Invoice?
+//   member      Member?
+//   createdAt   DateTime  @default(now())
+//   updatedAt   DateTime  @updatedAt
+
+//   @@map("plans")
+// }
 
 model Invoice {
   id                     Int                       @id @default(autoincrement())

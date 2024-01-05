@@ -1,0 +1,7 @@
+Migrando:
+
+    npm i cloudinary
+    npm install --save @types/multer
+    npm i url-parse
+	npm i textract
+	npm install --save @types/textract

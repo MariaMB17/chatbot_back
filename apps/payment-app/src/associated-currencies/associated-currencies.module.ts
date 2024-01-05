@@ -1,10 +1,10 @@
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 import { Module } from '@nestjs/common';
-import { AssociatedCurrenciesService } from './associated-currencies.service';
 import { AssociatedCurrenciesController } from './associated-currencies.controller';
-import { PrismaService } from '@PrismaServiceMysql';
+import { AssociatedCurrenciesService } from './associated-currencies.service';
 
 @Module({
   controllers: [AssociatedCurrenciesController],
-  providers: [AssociatedCurrenciesService, PrismaService],
+  providers: [AssociatedCurrenciesService, MysqlPrismaService],
 })
-export class AssociatedCurrenciesModule {}
+export class AssociatedCurrenciesModule { }

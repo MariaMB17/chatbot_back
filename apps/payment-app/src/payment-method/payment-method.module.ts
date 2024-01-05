@@ -1,10 +1,11 @@
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Module } from '@nestjs/common';
-import { PaymentMethodService } from './payment-method.service';
 import { PaymentMethodController } from './payment-method.controller';
-import { PrismaService } from '@PrismaServiceMysql';
+import { PaymentMethodService } from './payment-method.service';
+
 
 @Module({
   controllers: [PaymentMethodController],
-  providers: [PaymentMethodService, PrismaService],
+  providers: [PaymentMethodService, MysqlPrismaService],
 })
-export class PaymentMethodModule {}
+export class PaymentMethodModule { }

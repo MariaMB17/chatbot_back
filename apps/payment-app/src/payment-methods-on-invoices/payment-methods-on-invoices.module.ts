@@ -1,10 +1,10 @@
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 import { Module } from '@nestjs/common';
-import { PaymentMethodsOnInvoicesService } from './payment-methods-on-invoices.service';
 import { PaymentMethodsOnInvoicesController } from './payment-methods-on-invoices.controller';
-import { PrismaService } from '@PrismaServiceMysql';
+import { PaymentMethodsOnInvoicesService } from './payment-methods-on-invoices.service';
 
 @Module({
   controllers: [PaymentMethodsOnInvoicesController],
-  providers: [PaymentMethodsOnInvoicesService, PrismaService],
+  providers: [PaymentMethodsOnInvoicesService, MysqlPrismaService],
 })
-export class PaymentMethodsOnInvoicesModule {}
+export class PaymentMethodsOnInvoicesModule { }

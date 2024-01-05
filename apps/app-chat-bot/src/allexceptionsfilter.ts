@@ -23,8 +23,6 @@ export class AllExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    console.log(exception);
-
     let status = 500;
     let message: string = exception.message;
 

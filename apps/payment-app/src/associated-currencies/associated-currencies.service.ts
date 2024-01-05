@@ -1,14 +1,15 @@
+
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Injectable } from '@nestjs/common';
+import { Observable, from } from 'rxjs';
 import { CreateAssociatedCurrencyDto } from './dto/create-associated-currency.dto';
 import { UpdateAssociatedCurrencyDto } from './dto/update-associated-currency.dto';
-import { PrismaService } from '@PrismaServiceMysql';
-import { Observable, from } from 'rxjs';
 import { AssociatedCurrency } from './entities/associated-currency.entity';
 
 @Injectable()
 export class AssociatedCurrenciesService {
-  constructor(private readonly prismaService: PrismaService) {}
-  create(createAssociatedCurrencyDto: CreateAssociatedCurrencyDto): Observable<AssociatedCurrency>  {
+  constructor(private readonly prismaService: MysqlPrismaService) { }
+  create(createAssociatedCurrencyDto: CreateAssociatedCurrencyDto): Observable<AssociatedCurrency> {
     return from(this.prismaService.associatedCurrency.create({
       data: createAssociatedCurrencyDto.associatedCurrency
     }));

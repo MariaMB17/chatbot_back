@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePaymentMethodDto } from './dto/create-payment-method.dto';
 import { UpdatePaymentMethodDto } from './dto/update-payment-method.dto';
-import { PrismaService } from '@PrismaServiceMysql';
-import { PaymentMethod } from './entities/payment-method.entity';
+
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Observable, from } from 'rxjs';
+import { PaymentMethod } from './entities/payment-method.entity';
 
 @Injectable()
 export class PaymentMethodService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: MysqlPrismaService) { }
   create(createPaymentMethodDto: CreatePaymentMethodDto): Observable<PaymentMethod> {
     return from(this.prismaService.paymentMethod.create({
       data: createPaymentMethodDto.paymentMethod
@@ -17,28 +18,28 @@ export class PaymentMethodService {
   findAll(): Observable<PaymentMethod[]> {
     return from(this.prismaService.paymentMethod.findMany({
       include: {
-       invoice: {}
+        invoice: {}
       }
     }))
   }
 
   findOne(id: number): Observable<PaymentMethod> {
     return from(this.prismaService.paymentMethod.findFirst({
-      where: {id},
+      where: { id },
       include: {
-       invoice: {}
+        invoice: {}
       }
     }))
   }
 
   update(id: number, updatePaymentMethodDto: UpdatePaymentMethodDto): Observable<PaymentMethod> {
     return from(this.prismaService.paymentMethod.update({
-      where: {id},
+      where: { id },
       data: updatePaymentMethodDto.paymentMethod
     }))
   }
 
   remove(id: number): Observable<PaymentMethod> {
-    return from(this.prismaService.paymentMethod.delete({ where: { id }}));
+    return from(this.prismaService.paymentMethod.delete({ where: { id } }));
   }
 }

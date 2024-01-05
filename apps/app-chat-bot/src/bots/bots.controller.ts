@@ -1,11 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post
+} from '@nestjs/common';
 import { BotsService } from './bots.service';
 import { CreateBotDto } from './dto/create-bot.dto';
 import { UpdateBotDto } from './dto/update-bot.dto';
 
 @Controller('bots')
 export class BotsController {
-  constructor(private readonly botsService: BotsService) {}
+  constructor(private readonly botsService: BotsService) { }
 
   @Post()
   create(@Body() createBotDto: CreateBotDto) {

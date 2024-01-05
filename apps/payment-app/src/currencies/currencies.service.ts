@@ -1,15 +1,15 @@
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Injectable } from '@nestjs/common';
+import { Observable, from } from 'rxjs';
 import { CreateCurrencyDto } from './dto/create-currency.dto';
 import { UpdateCurrencyDto } from './dto/update-currency.dto';
-import { Observable, from } from 'rxjs';
 import { Currency } from './entities/currency.entity';
-import { PrismaService } from '@PrismaServiceMysql';
 
 @Injectable()
 export class CurrenciesService {
-  constructor(private readonly prismaService: PrismaService){}
+  constructor(private readonly prismaService: MysqlPrismaService) { }
   create(createCurrencyDto: CreateCurrencyDto): Observable<Currency> {
-    return from(this.prismaService.currency.create({data: createCurrencyDto.currency}));
+    return from(this.prismaService.currency.create({ data: createCurrencyDto.currency }));
   }
 
   findAll(): Observable<Currency[]> {
@@ -41,6 +41,6 @@ export class CurrenciesService {
   }
 
   remove(id: number): Observable<Currency> {
-    return from(this.prismaService.currency.delete({ where: { id }}));
+    return from(this.prismaService.currency.delete({ where: { id } }));
   }
 }

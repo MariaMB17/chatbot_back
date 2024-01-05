@@ -1,13 +1,13 @@
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 import { Injectable } from '@nestjs/common';
+import { Plan } from '@prisma/mysql/client';
+import { Observable, from } from 'rxjs';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
-import { Observable, from, of } from 'rxjs';
-import { Plan } from '@prisma/mysql/client';
-import { MysqlPrismaService } from '@PrismaServiceMysql';
 
 @Injectable()
 export class PlanService {
-  constructor(private readonly prismaService: MysqlPrismaService){}
+  constructor(private readonly prismaService: MysqlPrismaService) { }
   create(createPlanDto: CreatePlanDto): Observable<Plan> {
     return from(this.prismaService.plan.create({
       data: createPlanDto.plan
@@ -23,7 +23,7 @@ export class PlanService {
           }
         },
         invoice: {
-          
+
         }
       }
     }))
@@ -41,7 +41,7 @@ export class PlanService {
           }
         },
         invoice: {
-          
+
         }
       }
     }))
@@ -53,7 +53,7 @@ export class PlanService {
     }));
   }
 
-  remove(id: number): Observable<Plan>  {
-    return from(this.prismaService.plan.delete({ where: { id }}));
+  remove(id: number): Observable<Plan> {
+    return from(this.prismaService.plan.delete({ where: { id } }));
   }
 }

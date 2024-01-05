@@ -1,21 +1,21 @@
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Injectable } from '@nestjs/common';
+import { Invoice } from '@prisma/client';
+import { Observable, from } from 'rxjs';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
-import { Observable, from } from 'rxjs';
-import { Invoice } from '@prisma/client';
-import { PrismaService } from '@PrismaServiceMysql';
 
 @Injectable()
 export class InvoicesService {
-  constructor(private readonly prsmaService:  PrismaService) {}
-  create(createInvoiceDto: CreateInvoiceDto): Observable<Invoice>  {
-    return from(this.prsmaService.invoice.create({
+  constructor(private readonly prismaService: MysqlPrismaService) { }
+  create(createInvoiceDto: CreateInvoiceDto): Observable<Invoice> {
+    return from(this.prismaService.invoice.create({
       data: createInvoiceDto.invoice
     }));
   }
 
-  findAll(): Observable<Invoice[]>  {
-    return from(this.prsmaService.invoice.findMany({
+  findAll(): Observable<Invoice[]> {
+    return from(this.prismaService.invoice.findMany({
       include: {
         plan: {},
         currency: {},
@@ -24,8 +24,8 @@ export class InvoicesService {
     }));
   }
 
-  findOne(id: number): Observable<Invoice>  {
-    return from(this.prsmaService.invoice.findFirst({
+  findOne(id: number): Observable<Invoice> {
+    return from(this.prismaService.invoice.findFirst({
       where: { id },
       include: {
         plan: {},
@@ -35,15 +35,15 @@ export class InvoicesService {
     }));
   }
 
-  update(id: number, updateInvoiceDto: UpdateInvoiceDto): Observable<Invoice>  {
-    return from(this.prsmaService.invoice.update({
+  update(id: number, updateInvoiceDto: UpdateInvoiceDto): Observable<Invoice> {
+    return from(this.prismaService.invoice.update({
       where: { id },
       data: updateInvoiceDto.invoice
     }));
   }
 
-  remove(id: number): Observable<Invoice>  {
-    return from(this.prsmaService.invoice.delete({
+  remove(id: number): Observable<Invoice> {
+    return from(this.prismaService.invoice.delete({
       where: { id }
     }));
   }
