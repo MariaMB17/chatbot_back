@@ -10,6 +10,12 @@ import { MembersModule } from './members/members.module';
 import { PlanModule } from './plan/plan.module';
 import { ProfileModule } from './profile/profile.module';
 import { UsersModule } from './users/users.module';
+import { PaymentMethodModule } from './payment-method/payment-method.module';
+import { CurrenciesModule } from './currencies/currencies.module';
+import { InvoicesModule } from './invoices/invoices.module';
+import { AssociatedCurrenciesModule } from './associated-currencies/associated-currencies.module';
+import { ExchangerateModule } from './exchangerate/exchangerate.module';
+import { PaymentMethodsOnInvoicesModule } from './payment-methods-on-invoices/payment-methods-on-invoices.module';
 
 @Module({
   imports: [
@@ -24,23 +30,14 @@ import { UsersModule } from './users/users.module';
     MembersModule,
     PlanModule,
     DatabaseModule,
-    BotsModule
+    BotsModule,
+    PaymentMethodModule,
+    CurrenciesModule,
+    InvoicesModule,
+    AssociatedCurrenciesModule,
+    ExchangerateModule,
+    PaymentMethodsOnInvoicesModule
   ],
-import { PlanModule } from './plan/plan.module';
-import { MembersModule } from './members/members.module';
-import { PaymentMethodModule } from './payment-method/payment-method.module';
-import { CurrenciesModule } from './currencies/currencies.module';
-import { InvoicesModule } from './invoices/invoices.module';
-import { AssociatedCurrenciesModule } from './associated-currencies/associated-currencies.module';
-import { ExchangerateModule } from './exchangerate/exchangerate.module';
-import { PaymentMethodsOnInvoicesModule } from './payment-methods-on-invoices/payment-methods-on-invoices.module';
-
-@Module({
-  imports: [
-    AuthModule, 
-    UsersModule, 
-    ProfileModule, 
-    CompaniesModule, PlanModule, MembersModule, PaymentMethodModule, CurrenciesModule, InvoicesModule, AssociatedCurrenciesModule, ExchangerateModule, PaymentMethodsOnInvoicesModule],
   controllers: [AppController],
   providers: [AppService],
 })
