@@ -1,4 +1,4 @@
-import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 import { Injectable } from '@nestjs/common';
 import { Observable, from } from 'rxjs';
 import { CreateExchangerateDto } from './dto/create-exchangerate.dto';
@@ -7,7 +7,7 @@ import { Exchangerate } from './entities/exchangerate.entity';
 
 @Injectable()
 export class ExchangerateService {
-  constructor(private readonly prismaService: MysqlPrismaService) { }
+  constructor(private readonly prismaService: PrismaService) { }
   create(createExchangerateDto: CreateExchangerateDto): Observable<Exchangerate> {
     return from(this.prismaService.exchangeRate.create({
       data: createExchangerateDto.exchangerate

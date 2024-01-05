@@ -1,4 +1,4 @@
-import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
+import { PrismaService } from '@PrismaServiceMysql';
 import { Injectable } from '@nestjs/common';
 import { Invoice } from '@prisma/client';
 import { Observable, from } from 'rxjs';
@@ -7,9 +7,9 @@ import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 
 @Injectable()
 export class InvoicesService {
-  constructor(private readonly prismaService: MysqlPrismaService) { }
+  constructor(private readonly prsmaService: PrismaService) { }
   create(createInvoiceDto: CreateInvoiceDto): Observable<Invoice> {
-    return from(this.prismaService.invoice.create({
+    return from(this.prsmaService.invoice.create({
       data: createInvoiceDto.invoice
     }));
   }
