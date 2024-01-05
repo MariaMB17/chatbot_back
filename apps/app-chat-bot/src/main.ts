@@ -26,6 +26,6 @@ async function bootstrap() {
   const port = configService.get<number>('PORT');
 
   await app.listen(port);
-  console.log('http://localhost:', port);
+  console.log('http://localhost:', port, `${process.env.NODE_ENV}`);
 }
 bootstrap();

@@ -5,7 +5,7 @@ import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { Observable, catchError, map, of } from 'rxjs';
 import { Errors } from 'core/interface/interface-error';
-import { Plan } from 'apps/app-chat-bot/src/plan/entities/plan.entity';
+import { Plan } from '@Appchatbot/plan/entities/plan.entity';
 
 @Controller()
 export class PlanController {
@@ -20,7 +20,7 @@ export class PlanController {
   }
 
   @EventPattern('findAllPlan')
-  findAll(): Observable<Plan> {
+  findAll():Observable<Plan | Errors> {
     return this.planService.findAll().pipe(
       map((listPlan) => listPlan),
       catchError((error) => of({ msg: 'error al listar los planes', error, status: HttpStatus.CONFLICT }))

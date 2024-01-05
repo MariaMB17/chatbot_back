@@ -1,17 +1,10 @@
-<<<<<<< HEAD
-import { HttpStatus, Injectable, Session } from '@nestjs/common';
-=======
 import { HttpException, HttpStatus, Injectable, NotFoundException, Session } from '@nestjs/common';
-import { PrismaService } from '@PrismaServiceMysql';
-import { createAuthDto } from './dtos/login.dto';
 import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
->>>>>>> main
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/mysql/client';
-import { MysqlPrismaService } from 'apps/app-chat-bot/src/database/mysql-prisma.service';
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 import * as bcrypt from 'bcrypt';
 import { Errors } from 'core/interface/interface-error';
-import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
 import { createAuthDto } from './dtos/login.dto';
 
 @Injectable()

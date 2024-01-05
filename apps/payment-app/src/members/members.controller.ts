@@ -5,7 +5,7 @@ import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { Member } from './entities/member.entity';
 import { Observable, catchError, from, map, of, tap } from 'rxjs';
-import { CompaniesService } from 'apps/app-chat-bot/src/companies/companies.service';
+import { CompaniesService } from '@Appchatbot/companies/companies.service';
 import { Errors } from 'core/interface/interface-error';
 
 @Controller()

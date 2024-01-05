@@ -16,10 +16,11 @@ import { InvoicesModule } from './invoices/invoices.module';
 import { AssociatedCurrenciesModule } from './associated-currencies/associated-currencies.module';
 import { ExchangerateModule } from './exchangerate/exchangerate.module';
 import { PaymentMethodsOnInvoicesModule } from './payment-methods-on-invoices/payment-methods-on-invoices.module';
-
+process.env.NODE_ENV = process.env.NODE_ENV || 'env';
+console.log(process.env.NODE_ENV)
 @Module({
   imports: [
-    ConfigModule.forRoot({
+   ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}`,
       isGlobal: true,
     }),

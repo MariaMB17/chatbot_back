@@ -14,7 +14,7 @@ export class MysqlPrismaService
   async onModuleInit() {
     let retries = 5;
     while (retries > 0) {
-      try {
+      try {        
         await this.$connect();
         this.logger.log('Successfully connected to mysql database');
         break;

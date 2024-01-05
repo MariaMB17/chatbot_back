@@ -1,20 +1,4 @@
 import { Module } from '@nestjs/common';
-<<<<<<< HEAD
-import { JwtService } from '@nestjs/jwt';
-import { MysqlPrismaService } from '../database/mysql-prisma.service';
-import { ProfileService } from '../profile/profile.service';
-import { UsersService } from '../users/users.service';
-import { MembersController } from './members.controller';
-import { MembersService } from './members.service';
-
-@Module({
-  providers: [
-    MembersService,
-    MysqlPrismaService,
-    UsersService,
-    ProfileService,
-    JwtService
-=======
 import { MembersService } from './members.service';
 import { MembersController } from './members.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -37,7 +21,6 @@ import { JwtService } from '@nestjs/jwt';
         },
       },
     ]),
->>>>>>> main
   ],
   controllers: [MembersController],
   providers: [MembersService, JwtService],

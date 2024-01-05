@@ -1,15 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MysqlPrismaService } from 'apps/app-chat-bot/src/database/mysql-prisma.service';
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import * as bcrypt from 'bcrypt';
-import { Observable, from, tap } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-<<<<<<< HEAD
-=======
-import { PrismaService } from '@PrismaServiceMysql';
 import { Observable, from, of, tap } from 'rxjs';
-import * as bcrypt from 'bcrypt';
->>>>>>> main
 
 @Injectable()
 export class UserService {
@@ -19,13 +13,7 @@ export class UserService {
     return from(bcrypt.hash(
       createUserDto.user.password,
       +process.env.BCRYPT_SALT,
-<<<<<<< HEAD
-    )).pipe(
-      tap((encryptedPassword) => console.log(encryptedPassword))
-    )
-=======
     ))
->>>>>>> main
   }
 
   findAll() {

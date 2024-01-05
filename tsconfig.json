@@ -19,9 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@Appchatbot/*": ["apps/app-chat-bot/src/*"],
-      "@PrismaServiceMysql": ["apps/app-chat-bot/src/prisma.service"]
-      
-      
+      "@PrismaServiceMysql": ["apps/app-chat-bot/src/database/mysql-prisma.service"],
     }
   }
 }

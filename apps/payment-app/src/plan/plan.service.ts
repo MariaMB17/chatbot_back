@@ -2,13 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { Observable, from, of } from 'rxjs';
-<<<<<<< HEAD
 import { Plan } from '@prisma/mysql/client';
-import { MysqlPrismaService } from 'apps/app-chat-bot/src/database/mysql-prisma.service';
-=======
-import { PrismaService } from '@PrismaServiceMysql';
-import { Plan } from 'apps/app-chat-bot/src/plan/entities/plan.entity';
->>>>>>> main
+import { MysqlPrismaService } from '@PrismaServiceMysql';
 
 @Injectable()
 export class PlanService {
