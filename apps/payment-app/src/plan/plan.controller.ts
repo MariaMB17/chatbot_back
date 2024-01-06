@@ -1,18 +1,19 @@
+import { Plan } from '@Appchatbot/plan/entities/plan.entity';
 import { Controller, HttpStatus } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
-import { PlanService } from './plan.service';
+import { Errors } from 'core/interface/interface-error';
+import { Observable, catchError, map, of } from 'rxjs';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
-import { Observable, catchError, map, of } from 'rxjs';
-import { Errors } from 'core/interface/interface-error';
-import { Plan } from '@Appchatbot/plan/entities/plan.entity';
+import { PlanService } from './plan.service';
 
 @Controller()
 export class PlanController {
-  constructor(private readonly planService: PlanService) {}
+  constructor(private readonly planService: PlanService) { }
 
   @EventPattern('createPlan')
-  create(@Payload() createPlanDto: CreatePlanDto):Observable<Plan | Errors> {
+  create(@Payload() createPlanDto: CreatePlanDto): Observable<Plan | Errors> {
+    console.log(createPlanDto);
     return this.planService.create(createPlanDto).pipe(
       map((dataPlan) => dataPlan),
       catchError((error) => of({ msg: 'El plan no pudo ser creado', error, status: HttpStatus.CONFLICT }))
@@ -20,7 +21,7 @@ export class PlanController {
   }
 
   @EventPattern('findAllPlan')
-  findAll():Observable<Plan | Errors> {
+  findAll(): Observable<Plan | Errors> {
     return this.planService.findAll().pipe(
       map((listPlan) => listPlan),
       catchError((error) => of({ msg: 'error al listar los planes', error, status: HttpStatus.CONFLICT }))

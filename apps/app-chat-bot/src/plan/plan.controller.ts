@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Session, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreatePlanDto } from './dto/create-plan.dto';
-import { ResponseMessage } from '../message.decorator';
-import { Observable, catchError, map, tap } from 'rxjs';
 import { AuthGuard } from 'apps/auth-app/src/auth.guard';
-import { Plan } from './entities/plan.entity';
+import { Observable } from 'rxjs';
+import { ResponseMessage } from '../message.decorator';
+import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
+import { Plan } from './entities/plan.entity';
 
 @Controller('plan')
 export class PlanController {
@@ -14,7 +14,8 @@ export class PlanController {
   @Post()
   @UseGuards(AuthGuard)
   @ResponseMessage('Plan creado con exito')
-  create(@Session() sessions: Record<string, any>, @Body() createPlanDto: CreatePlanDto): Observable<Plan> {
+  create(@Session() sessions: Record<string, any>,
+    @Body() createPlanDto: CreatePlanDto): Observable<Plan> {
     return this.paymentMsService.send('createPlan', createPlanDto)
   }
 
@@ -28,7 +29,7 @@ export class PlanController {
   @Get(':id')
   @UseGuards(AuthGuard)
   @ResponseMessage('Plan encontrado con exito')
-  findOne(@Param('id') id: string): Observable<Plan> {    
+  findOne(@Param('id') id: string): Observable<Plan> {
     return this.paymentMsService.send('findOnePlan', +id);
   }
 

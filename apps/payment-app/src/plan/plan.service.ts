@@ -1,4 +1,5 @@
-import { MysqlPrismaService } from '@PrismaServiceMysql';
+
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Plan } from '@prisma/mysql/client';
 import { Observable, from } from 'rxjs';
