@@ -8,6 +8,26 @@ datasource db {
   url      = env("MYSQL_DATABASE_URL")
 }
 
+model ItemOnChat {
+  id      Int     @id @default(autoincrement())
+  chat    Chat   @relation(fields: [chat_id], references: [id])
+  chat_id Int
+  ask     String
+  answer  String
+  @@map("itemonchat")
+}
+
+model Chat {
+  id          Int           @id @default(autoincrement())
+  descripcion String
+  member      Member       @relation(fields: [member_id], references: [id])
+  member_id   Int
+  bot         Bot          @relation(fields: [bot_id], references: [id])
+  bot_id      Int
+  itemOnChat  ItemOnChat[]
+  @@map("chats")
+}
+
 model KnowledgeOnBot {
   bot          Bot       @relation(fields: [bot_id], references: [id])
   bot_id       Int
@@ -25,6 +45,7 @@ model Bot {
   personality    String?
   nickname       String
   memberOnBot    MemberOnBot[]
+  chat           Chat[]
   knowledgeOnBot KnowledgeOnBot[]
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
@@ -71,6 +92,7 @@ model Member {
   memberOnKnowledge MemberOnKnowledge[]
   memberOnBot       MemberOnBot[]
   memberLog         MemberLog[]
+  chat              Chat[]
   role              String               @default("ADMIN")
   createdAt         DateTime             @default(now())
   updatedAt         DateTime             @updatedAt

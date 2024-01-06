@@ -1,4 +1,24 @@
 -- CreateTable
+CREATE TABLE `itemonchat` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `chat_id` INTEGER NOT NULL,
+    `ask` VARCHAR(191) NOT NULL,
+    `answer` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `chats` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `descripcion` VARCHAR(191) NOT NULL,
+    `member_id` INTEGER NOT NULL,
+    `bot_id` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `knowledgenbots` (
     `bot_id` INTEGER NOT NULL,
     `knowledge_id` INTEGER NOT NULL,
@@ -236,6 +256,15 @@ CREATE TABLE `exchangeRates` (
     UNIQUE INDEX `exchangeRates_foreigncurrencyId_key`(`foreigncurrencyId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `itemonchat` ADD CONSTRAINT `itemonchat_chat_id_fkey` FOREIGN KEY (`chat_id`) REFERENCES `chats`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `chats` ADD CONSTRAINT `chats_member_id_fkey` FOREIGN KEY (`member_id`) REFERENCES `members`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `chats` ADD CONSTRAINT `chats_bot_id_fkey` FOREIGN KEY (`bot_id`) REFERENCES `bots`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `knowledgenbots` ADD CONSTRAINT `knowledgenbots_bot_id_fkey` FOREIGN KEY (`bot_id`) REFERENCES `bots`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
