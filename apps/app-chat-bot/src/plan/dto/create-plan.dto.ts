@@ -1,5 +1,9 @@
-import { Prisma } from '@prisma/mysql/client';
-
+import { IsNotEmpty } from "class-validator"
 export class CreatePlanDto {
-    plan: Prisma.PlanCreateInput
+    @IsNotEmpty({ message: 'Debe indicar el nombre'})
+    name: string;
+}
+
+export class DataPlan {
+    plan: CreatePlanDto
 }

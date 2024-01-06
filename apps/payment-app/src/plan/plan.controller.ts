@@ -38,7 +38,7 @@ export class PlanController {
 
   @MessagePattern('updatePlan')
   update(@Payload() updatePlanDto: UpdatePlanDto): Observable<Plan> {
-    return this.planService.update(updatePlanDto.plan.id, updatePlanDto).pipe(
+    return this.planService.update(updatePlanDto.id, updatePlanDto).pipe(
       map((plan) => plan),
       catchError((error) => of({ msg: 'error al modificar el plan', error, status: HttpStatus.CONFLICT }))
     );
