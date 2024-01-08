@@ -8,9 +8,8 @@ import { TransformationInterceptor } from './transformation.interceptor';
 
 
 async function bootstrap() {
-  //const app = await NestFactory.create(AppModule);
-  console.log(process.version);
-  /*app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new TransformationInterceptor(new Reflector()));
   app.useGlobalFilters(new AllExceptionFilter());
   app.use(
@@ -26,7 +25,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT');
 
-  await app.listen(port);
-  console.log('http://localhost:', port);*/
+  await app.listen(port); 
 }
 bootstrap();
