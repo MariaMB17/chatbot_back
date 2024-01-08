@@ -12,7 +12,7 @@ import { AuthService } from './auth.service';
         transport: Transport.RMQ,
         options: {
           urls: [
-            'amqps://suzhaeoo:nXe5NWVYBSnfQmXCLY2cwnAOB1xOEeSR@beaver.rmq.cloudamqp.com/suzhaeoo'
+            'amqps://hjnembfy:XJcno5NBU8th88AQXW3dCxHkFWF8RgO2@woodpecker.rmq.cloudamqp.com/hjnembfy'
           ],
           queue: 'auth-queue',
           queueOptions: {

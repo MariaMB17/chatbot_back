@@ -18,8 +18,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@Appchatbot/*": ["apps/app-chat-bot/src/*"],
-      "@PrismaServiceMysql": ["apps/app-chat-bot/src/database/mysql-prisma.service"],
+      "@Appchatbot/*": [
+        "apps/app-chat-bot/src/*"
+      ],
+      "@PrismaServiceMysql": [
+        "apps/app-chat-bot/src/database/mysql-prisma.service"
+      ]
     }
   }
 }

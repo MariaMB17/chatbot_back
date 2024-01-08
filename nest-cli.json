@@ -36,6 +36,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/payment-app/tsconfig.app.json"
       }
+    },
+    "chat-logs": {
+      "type": "application",
+      "root": "apps/chat-logs",
+      "entryFile": "main",
+      "sourceRoot": "apps/chat-logs/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/chat-logs/tsconfig.app.json"
+      }
     }
   }
 }
