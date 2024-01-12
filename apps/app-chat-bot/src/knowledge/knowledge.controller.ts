@@ -57,7 +57,7 @@ export class KnowledgeController {
   @Post('upload')
   @ResponseMessage('Archivo Subido')
   @UseInterceptors(FilesInterceptor('files'))
-  async uploadFile(
+  uploadFile(
     @Body('member_id', ParseIntPipe) member_id: number,
     @Body('knowledge_id', ParseIntPipe) knowledge_id: number,
     @UploadedFiles() files: Express.Multer.File[],) {
