@@ -51,6 +51,21 @@ export class KnowledgeService {
   }
 
   @UseFilters(AllExceptionFilter)
+  async textContent(id: number): Promise<String> {
+    const result = await this.prismaService.knowledge.findFirst({
+      where: { id },
+      select: {
+        knowledgeBase: {
+          select: { textContent: true }
+        }
+      }
+    });
+
+    const texto = result.knowledgeBase[0].textContent;
+    return texto
+  }
+
+  @UseFilters(AllExceptionFilter)
   async findAll(): Promise<Knowledge[]> {
     const result = await this.prismaService.knowledge.findMany();
     return result

@@ -27,6 +27,12 @@ export class KnowledgeController {
     return this.knowledgeService.create(createKnowledgeDto);
   }
 
+  @Get('textContext/:id')
+  @ResponseMessage('Envio de textContent')
+  textContent(@Param('id', ParseIntPipe) id: number) {
+    return this.knowledgeService.textContent(id);
+  }
+
   @Get()
   @ResponseMessage('Consulta General')
   findAll() {

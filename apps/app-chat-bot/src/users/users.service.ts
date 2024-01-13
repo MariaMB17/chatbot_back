@@ -23,6 +23,35 @@ export class UsersService {
           },
         })).pipe(
           switchMap((user) => {
+            // Add Member **************************/
+            const createMember = async () => {
+              const { name } = createUserDto;
+              let companyId = 0;
+              const result = await this.prismaService.company.findUnique({
+                where: {
+                  name
+                }
+              })
+              if (result) {
+                companyId = result.id;
+              } else {
+                const response = await this.prismaService.company.create({
+                  data: { name }
+                })
+                companyId = response.id;
+              }
+              const objectMember = {
+                userId: user.id,
+                companyId,
+                planId: 1, // Default "FREE"
+              }
+              await this.prismaService.member.create({
+                data: { ...objectMember }
+              })
+            }
+            createMember();
+            //*********************************** */
+
             if (createUserDto.profile) {
               return from(this.prismaService.profile.create({
                 data: {
@@ -33,7 +62,7 @@ export class UsersService {
                 map((profile) => {
                   return {
                     user,
-                    profile
+                    profile,
                   }
                 })
               )

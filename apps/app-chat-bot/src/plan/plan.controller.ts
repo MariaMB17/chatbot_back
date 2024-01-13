@@ -4,7 +4,6 @@ import { AuthGuard } from 'apps/auth-app/src/auth.guard';
 import { Observable } from 'rxjs';
 import { ResponseMessage } from '../message.decorator';
 import { CreatePlanDto, DataPlan } from './dto/create-plan.dto';
-import { UpdatePlanDto } from './dto/update-plan.dto';
 import { Plan } from './entities/plan.entity';
 
 @Controller('plan')
@@ -39,7 +38,7 @@ export class PlanController {
   @ResponseMessage('Plan fue modificado con exito')
   update(@Param('id') id: string, @Body() updatePlanDto: CreatePlanDto): Observable<Plan> {
     const dataPayment = {
-      id:+id,
+      id: +id,
       ...this._dataPlan(updatePlanDto)
     }
     return this.paymentMsService.send('updatePlan', updatePlanDto)
@@ -52,8 +51,8 @@ export class PlanController {
     return this.paymentMsService.send('removePlan', +id);
   }
 
-  private _dataPlan(data: CreatePlanDto){    
-    let dataPlan = new DataPlan()    
+  private _dataPlan(data: CreatePlanDto) {
+    let dataPlan = new DataPlan()
     dataPlan.plan = data
     return dataPlan
   }
