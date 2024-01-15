@@ -5,6 +5,7 @@ import * as session from 'express-session';
 import { AllExceptionFilter } from './allexceptionsfilter';
 import { AppModule } from './app.module';
 import { TransformationInterceptor } from './transformation.interceptor';
+import * as cors from 'cors';
 
 
 async function bootstrap() {
@@ -13,6 +14,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new TransformationInterceptor(new Reflector()));
   app.useGlobalFilters(new AllExceptionFilter());
+  app.use(cors({
+    origin: 'http://localhost:3000'
+  }));
   app.use(
     session({
       secret: process.env.SECRET_KEY,
