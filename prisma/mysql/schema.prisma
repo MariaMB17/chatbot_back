@@ -26,6 +26,7 @@ model Bot {
   nickname       String
   memberOnBot    MemberOnBot[]
   knowledgeOnBot KnowledgeOnBot[]
+  chat           Chat[]
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
   @@map("bots")
@@ -71,24 +72,13 @@ model Member {
   memberOnKnowledge MemberOnKnowledge[]
   memberOnBot       MemberOnBot[]
   memberLog         MemberLog[]
+  chat              Chat[]
   role              String               @default("ADMIN")
   createdAt         DateTime             @default(now())
   updatedAt         DateTime             @updatedAt
   @@map("members")
 }
-// model Member {
-//   id        Int       @id @default(autoincrement())
-//   companyId Int
-//   userId    Int       @unique
-//   planId    Int       @unique
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-//   company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
-//   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   plan      Plan?    @relation(fields: [planId], references: [id], onDelete: Cascade)
 
-//   @@map("members")
-// }
 model Knowledge {
   id                Int                  @id @default(autoincrement())
   description       String
@@ -129,7 +119,6 @@ model User {
   updatedAt DateTime  @updatedAt
   Member    Member?
   Profile   Profile?
-
   @@map("users")
 }
 
@@ -144,7 +133,6 @@ model Profile {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   User       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@map("profiles")
 }
 
@@ -154,11 +142,10 @@ model Company {
   rif         String?
   addres      String?
   numberphone String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   member      Member[]
   invoice     Invoice[]
-
   @@map("companies")
 }
 
@@ -178,19 +165,6 @@ model Plan {
   @@map("plans")
 }
 
-// model Plan {
-//   id          Int       @id @default(autoincrement())
-//   description String
-//   cost        Decimal   @db.Decimal(10, 2)
-//   days        Int
-//   invoice     Invoice?
-//   member      Member?
-//   createdAt   DateTime  @default(now())
-//   updatedAt   DateTime  @updatedAt
-
-//   @@map("plans")
-// }
-
 model Invoice {
   id                     Int                       @id @default(autoincrement())
   fecha                  DateTime
@@ -199,27 +173,25 @@ model Invoice {
   plan                   Plan                     @relation(fields: [planId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   planId                 Int                       @unique
   PaymentMethodOnInvoice PaymentMethodOnInvoice[]
-  company                Company                @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  company                Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   companyId              Int
   currency               Currency                 @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   currencyId             Int                       @unique
   createdAt              DateTime                  @default(now())
   updatedAt              DateTime                  @updatedAt
-
   @@map("invoices")
 }
 
 model Currency {
   id                 Int                   @id @default(autoincrement())
-  code               String
+  code               String                @unique
   description        String
-  symbol             String
+  symbol             String                @unique
   invoice            Invoice?
   associatedCurrency AssociatedCurrency[]
   exchangeRate       ExchangeRate?
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
-
   @@map("currencies")
 }
 
@@ -229,7 +201,6 @@ model PaymentMethod {
   invoice     PaymentMethodOnInvoice[]
   createdAt   DateTime                  @default(now())
   updatedAt   DateTime                  @updatedAt
-
   @@map("paymentMethods")
 }
 
@@ -246,7 +217,6 @@ model PaymentMethodOnInvoice {
   numReference    String
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-
   @@map("paymentMethodsOnInvoices")
 }
 
@@ -258,7 +228,6 @@ model AssociatedCurrency {
   exchangeRate ExchangeRate?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-
   @@map("associatedCurrencies")
 }
 
@@ -266,6 +235,7 @@ model ExchangeRate {
   id                 Int                 @id @default(autoincrement())
   description        String
   currencybase       Currency           @relation(fields: [currencyIdbaseId], references: [id])
+  currencyIdbase     Int                 @unique
   currencyIdbaseId   Int                 @unique
   foreigncurrency    AssociatedCurrency @relation(fields: [foreigncurrencyId], references: [id])
   foreigncurrencyId  Int                 @unique
@@ -273,6 +243,5 @@ model ExchangeRate {
   currencyconversion Decimal             @db.Decimal(10, 2)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
-
   @@map("exchangeRates")
 }

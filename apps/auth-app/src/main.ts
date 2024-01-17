@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { AuthAppModule } from './auth-app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { UserModule } from './user/user.module';
+import { AuthAppModule } from './auth-app.module';
 
 //https://api.cloudamqp.com/console/3e599343-2234-42fa-99be-e503b35a036c/details
 
@@ -31,7 +30,7 @@ async function bootstrap() {
         },
       },
     },*/
-);
+  );
   await app.listen();
 }
 bootstrap();

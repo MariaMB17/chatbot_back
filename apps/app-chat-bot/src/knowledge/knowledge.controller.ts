@@ -27,6 +27,12 @@ export class KnowledgeController {
     return this.knowledgeService.create(createKnowledgeDto);
   }
 
+  @Get('textContext/:id')
+  @ResponseMessage('Envio de textContent')
+  textContent(@Param('id', ParseIntPipe) id: number) {
+    return this.knowledgeService.textContent(id);
+  }
+
   @Get()
   @ResponseMessage('Consulta General')
   findAll() {
@@ -57,7 +63,7 @@ export class KnowledgeController {
   @Post('upload')
   @ResponseMessage('Archivo Subido')
   @UseInterceptors(FilesInterceptor('files'))
-  async uploadFile(
+  uploadFile(
     @Body('member_id', ParseIntPipe) member_id: number,
     @Body('knowledge_id', ParseIntPipe) knowledge_id: number,
     @UploadedFiles() files: Express.Multer.File[],) {

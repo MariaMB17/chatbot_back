@@ -1,18 +1,18 @@
+import { CompaniesService } from '@Appchatbot/companies/companies.service';
 import { Controller, HttpStatus } from '@nestjs/common';
-import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
-import { MembersService } from './members.service';
+import { EventPattern, Payload } from '@nestjs/microservices';
+import { Errors } from 'core/interface/interface-error';
+import { Observable, catchError, map, of } from 'rxjs';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { Member } from './entities/member.entity';
-import { Observable, catchError, from, map, of, tap } from 'rxjs';
-import { CompaniesService } from '@Appchatbot/companies/companies.service';
-import { Errors } from 'core/interface/interface-error';
+import { MembersService } from './members.service';
 
 @Controller()
 export class MembersController {
   constructor(
     private readonly membersService: MembersService,
-    private readonly companieService: CompaniesService) {}
+    private readonly companieService: CompaniesService) { }
 
   @EventPattern('createMember')
   create(@Payload() createMemberDto: CreateMemberDto): Observable<Member | Errors> {
@@ -22,6 +22,13 @@ export class MembersController {
     );
   }
 
+  @EventPattern('findAllMembersTest')
+  findAllTest(): Observable<Member | Errors> {
+    return this.membersService.findAllTest().pipe(
+      map((listMember) => listMember),
+      catchError((error) => of({ msg: 'Error al listar los miembros', error, status: HttpStatus.CONFLICT }))
+    );
+  }
   @EventPattern('findAllMembers')
   findAll(): Observable<Member | Errors> {
     return this.membersService.findAll().pipe(
