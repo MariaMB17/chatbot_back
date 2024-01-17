@@ -127,10 +127,10 @@ CREATE TABLE `profiles` (
 -- CreateTable
 CREATE TABLE `companies` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `rif` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `addres` VARCHAR(191) NOT NULL,
-    `numberphone` VARCHAR(191) NOT NULL,
+    `rif` VARCHAR(191) NULL,
+    `addres` VARCHAR(191) NULL,
+    `numberphone` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -225,14 +225,14 @@ CREATE TABLE `associatedCurrencies` (
 CREATE TABLE `exchangeRates` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `description` VARCHAR(191) NOT NULL,
-    `currencyIdbase` INTEGER NOT NULL,
+    `currencyIdbaseId` INTEGER NOT NULL,
     `foreigncurrencyId` INTEGER NOT NULL,
     `mountCurrencyBse` DECIMAL(10, 2) NOT NULL,
     `currencyconversion` DECIMAL(10, 2) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `exchangeRates_currencyIdbase_key`(`currencyIdbase`),
+    UNIQUE INDEX `exchangeRates_currencyIdbaseId_key`(`currencyIdbaseId`),
     UNIQUE INDEX `exchangeRates_foreigncurrencyId_key`(`foreigncurrencyId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -295,7 +295,7 @@ ALTER TABLE `paymentMethodsOnInvoices` ADD CONSTRAINT `paymentMethodsOnInvoices_
 ALTER TABLE `associatedCurrencies` ADD CONSTRAINT `associatedCurrencies_currencyId_fkey` FOREIGN KEY (`currencyId`) REFERENCES `currencies`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `exchangeRates` ADD CONSTRAINT `exchangeRates_currencyIdbase_fkey` FOREIGN KEY (`currencyIdbase`) REFERENCES `currencies`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `exchangeRates` ADD CONSTRAINT `exchangeRates_currencyIdbaseId_fkey` FOREIGN KEY (`currencyIdbaseId`) REFERENCES `currencies`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `exchangeRates` ADD CONSTRAINT `exchangeRates_foreigncurrencyId_fkey` FOREIGN KEY (`foreigncurrencyId`) REFERENCES `associatedCurrencies`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
