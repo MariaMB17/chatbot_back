@@ -73,7 +73,7 @@ export class KnowledgeService {
 
   @UseFilters(AllExceptionFilter)
   async findOne(id: number): Promise<Knowledge> {
-    const result = await this.prismaService.knowledge.findUnique({
+    const result = await this.prismaService.knowledge.findFirst({
       where: { id }
     });
     return result
@@ -100,23 +100,31 @@ export class KnowledgeService {
     return result
   }
 
+  // Subida de Archivos
   @UseFilters(AllExceptionFilter)
   async upload(
     member_id: number,
     knowledge_id: number,
-    files: Express.Multer.File[]):
-    Promise<(KnowledgeBase & { knowledgeFile: KnowledgeFile })[]> {
+    files: Express.Multer.File[]
+  ): Promise<(KnowledgeBase & { knowledgeFile: KnowledgeFile })[]> {
 
     if (!files || files.length === 0) {
       throw new Error('No files provided');
     }
-    const allObjetoData = await Promise.all(files.map(file => this.processFile(knowledge_id, file)));
-    return Promise.all(allObjetoData.map(objetoData => this.createKnowledgeBaseAndFile(member_id, objetoData)));
+    const allObjectData = await Promise.all(files.map(file => this.processFile(knowledge_id, file)));
+    return Promise.all(allObjectData.map(objectData => this.createKnowledgeBaseAndFile(member_id, objectData)));
   }
 
-  private async processFile(knowledge_id: number, file: Express.Multer.File): Promise<{ base: BaseProps, file: FileProps }> {
+  private async processFile(
+    knowledge_id: number,
+    file: Express.Multer.File):
+    Promise<{
+      base: BaseProps,
+      file: FileProps
+    }> {
+
     const { originalname, mimetype, buffer } = file;
-    const objetoBase: BaseProps = {
+    const objectBase: BaseProps = {
       originalname,
       mimetype,
       textContent: '',
@@ -125,7 +133,7 @@ export class KnowledgeService {
 
     const responseFile = await this.uploadToCloudinary(originalname, buffer);
     const { asset_id, public_id, secure_url } = responseFile;
-    const objetoFile: FileProps = {
+    const objectFile: FileProps = {
       asset_id,
       public_id,
       secure_url,
@@ -133,14 +141,16 @@ export class KnowledgeService {
     };
 
     const textContext = await this.getTextContext(secure_url, mimetype);
-    objetoBase.textContent = textContext;
+    objectBase.textContent = textContext;
     return {
-      base: objetoBase,
-      file: objetoFile
+      base: objectBase,
+      file: objectFile
     };
   }
 
-  private uploadToCloudinary(originalname: string, buffer: Buffer): Promise<UploadApiResponse> {
+  private uploadToCloudinary(
+    originalname: string,
+    buffer: Buffer): Promise<UploadApiResponse> {
     const optionsCloudinary: UploadApiOptions = {
       resource_type: 'raw',
       folder: 'ia-chatbot',
@@ -160,7 +170,9 @@ export class KnowledgeService {
     });
   }
 
-  private getTextContext(secure_url: string, mimetype: string): Promise<string> {
+  private getTextContext(
+    secure_url: string,
+    mimetype: string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.downloadFormData(secure_url, function (data) {
         if (data) {
@@ -177,7 +189,9 @@ export class KnowledgeService {
     });
   }
 
-  private downloadFormData(urlStr: string, callback: (data: Buffer) => void) {
+  private downloadFormData(
+    urlStr: string,
+    callback: (data: Buffer) => void) {
     const parsedUrl = parse(urlStr);
     const lib = parsedUrl.protocol === 'https:' ? https : http;
     lib.get(urlStr, function (res) {
@@ -192,29 +206,33 @@ export class KnowledgeService {
     });
   }
 
-  private async createKnowledgeBaseAndFile(member_id: number, objetoData: { base: BaseProps, file: FileProps }) {
+  private async createKnowledgeBaseAndFile(
+    member_id: number,
+    objectData: {
+      base: BaseProps,
+      file: FileProps
+    }) {
+
     const knowledgeBase = await this.prismaService.knowledgeBase.create({
-      data: { ...objetoData.base }
+      data: { ...objectData.base }
     });
 
     const knowledgeFile = await this.prismaService.knowledgeFile.create({
       data: {
-        ...objetoData.file,
+        ...objectData.file,
         knowledgeBase_id: knowledgeBase.id
       }
     });
 
-    console.log(member_id);
-
     // Log item: "Document"
-    const objetoMemberLog = {
+    const objectMemberLog = {
       item: "Document",
       counter: 1,
       member_id
     };
 
     await this.prismaService.memberLog.create({
-      data: { ...objetoMemberLog }
+      data: { ...objectMemberLog }
     })
 
     return {
