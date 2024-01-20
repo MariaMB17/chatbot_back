@@ -5,6 +5,7 @@ import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { ProfileService } from '../profile/profile.service';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { CompaniesService } from '@Appchatbot/companies/companies.service';
 
 @Module({
   imports: [
