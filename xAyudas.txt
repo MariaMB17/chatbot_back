@@ -5,3 +5,20 @@ Migrando:
     npm i url-parse
 	npm i textract
 	npm install --save @types/textract
+
+
+
+    // Agrupa y cuenta por Item
+      //   const groupedData = await this.prismaService.memberLog.groupBy({
+      //     by: ['item'],
+      //     _sum: {
+      //       counter: true
+      //     },
+      //     where: {
+      //       member: {
+      //         is: { id: member_id }
+      //       }
+      //     }
+      //   }
+      //   )
+      //   console.log(groupedData);

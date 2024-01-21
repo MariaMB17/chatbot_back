@@ -46,26 +46,86 @@ export class BotsService {
 
   @UseFilters(AllExceptionFilter)
   async findAll(): Promise<Bot[]> {
-    const result = await this.prismaService.bot.findMany();
-    return result
+    return await this.prismaService.bot.findMany({
+      include: {
+        memberOnBot: {
+          include: {
+            member: true
+          }
+        },
+        knowledgeOnBot: {
+          include: {
+            knowledge: {
+              include: {
+                knowledgeBase: {
+                  include: {
+                    knowledgeFile: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
   }
 
   @UseFilters(AllExceptionFilter)
   async findOne(id: number): Promise<Bot> {
-    const result = this.prismaService.bot.findFirst({
-      where: { id }
-    })
-    return result;
+    return this.prismaService.bot.findFirst({
+      where: { id },
+      include: {
+        memberOnBot: {
+          include: {
+            member: true
+          }
+        },
+        knowledgeOnBot: {
+          include: {
+            knowledge: {
+              include: {
+                knowledgeBase: {
+                  include: {
+                    knowledgeFile: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
   }
 
   update(id: number, updateBotDto: UpdateBotDto) {
     return `This action updates a #${id} bot`;
   }
 
-  remove(id: number): Promise<Bot> {
-    const result = this.prismaService.bot.delete({
+  async remove(id: number): Promise<Bot> {
+    const result = await this.prismaService.bot.findFirst({
+      where: { id },
+      select: {
+        memberOnBot: {
+          select: { member_id: true }
+        }
+      }
+    });
+
+    if (result) {
+      const { member_id } = result.memberOnBot[0]
+      //  // Log item: "bot"
+      const objetMemberLog = {
+        item: "Bot",
+        counter: -1,
+        member_id
+      };
+      await this.prismaService.memberLog.create({
+        data: { ...objetMemberLog }
+      })
+    }
+
+    return this.prismaService.bot.delete({
       where: { id }
     })
-    return result;
   }
 }

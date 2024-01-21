@@ -1,9 +1,13 @@
 import { Injectable, UseFilters } from '@nestjs/common';
-import { Knowledge, KnowledgeBase, KnowledgeFile } from '@prisma/mysql/client';
+import {
+  Knowledge,
+  KnowledgeBase,
+  KnowledgeFile
+} from '@prisma/mysql/client';
 import {
   UploadApiOptions,
   UploadApiResponse,
-  v2 as cloudinary,
+  v2 as cloudinary
 } from 'cloudinary';
 import * as http from 'http';
 import * as https from 'https';
@@ -35,21 +39,22 @@ export class KnowledgeService {
   @UseFilters(AllExceptionFilter)
   async create(createKnowledgeDto: CreateKnowledgeDto): Promise<Knowledge | null> {
 
+    const { member_id } = createKnowledgeDto;
     const result = await this.prismaService.knowledge.create({
       data: { ...createKnowledgeDto.knowledge }
     });
 
-    const objetoMemberOnKnowledge = {
-      member_id: createKnowledgeDto.member_id,
+    const objectMemberOnKnowledge = {
+      member_id,
       knowledge_id: result.id
     }
     await this.prismaService.memberOnKnowledge.create({
-      data: { ...objetoMemberOnKnowledge }
+      data: { ...objectMemberOnKnowledge }
     })
-
     return result
   }
 
+  // solo probar el chat para obtener la cadena de texto
   @UseFilters(AllExceptionFilter)
   async textContent(id: number): Promise<String> {
     const result = await this.prismaService.knowledge.findFirst({
@@ -61,41 +66,44 @@ export class KnowledgeService {
       }
     });
 
-    const texto = result.knowledgeBase[0].textContent;
-    return texto
+    return result.knowledgeBase[0].textContent;
   }
 
   @UseFilters(AllExceptionFilter)
   async findAll(): Promise<Knowledge[]> {
-    const result = await this.prismaService.knowledge.findMany();
-    return result
+    return await this.prismaService.knowledge.findMany({
+      include: {
+        knowledgeBase: {
+          include: {
+            knowledgeFile: true
+          }
+        }
+      }
+    });
   }
 
   @UseFilters(AllExceptionFilter)
   async findOne(id: number): Promise<Knowledge> {
-    const result = await this.prismaService.knowledge.findFirst({
-      where: { id }
+    return await this.prismaService.knowledge.findFirst({
+      where: { id },
+      include: {
+        knowledgeBase: {
+          include: {
+            knowledgeFile: true
+          }
+        }
+      }
     });
-    return result
   }
 
   @UseFilters(AllExceptionFilter)
   async update(id: number, updateKnowledgeDto:
     UpdateKnowledgeDto): Promise<Knowledge> {
-    const result =
-      await this.prismaService.knowledge.update({
-        where: { id },
-        data: {
-          ...updateKnowledgeDto.knowledge,
-        },
-      });
-    return result
-  }
-
-  @UseFilters(AllExceptionFilter)
-  async remove(id: number): Promise<Knowledge> {
-    const result = await this.prismaService.knowledge.delete({
-      where: { id }
+    const result = await this.prismaService.knowledge.update({
+      where: { id },
+      data: {
+        ...updateKnowledgeDto.knowledge,
+      },
     });
     return result
   }
@@ -111,8 +119,14 @@ export class KnowledgeService {
     if (!files || files.length === 0) {
       throw new Error('No files provided');
     }
-    const allObjectData = await Promise.all(files.map(file => this.processFile(knowledge_id, file)));
-    return Promise.all(allObjectData.map(objectData => this.createKnowledgeBaseAndFile(member_id, objectData)));
+
+    const allObjectData = await Promise.all(
+      files.map(file =>
+        this.processFile(knowledge_id, file)));
+
+    return Promise.all(
+      allObjectData.map(objectData =>
+        this.createKnowledgeBaseAndFile(member_id, objectData)));
   }
 
   private async processFile(
@@ -124,6 +138,7 @@ export class KnowledgeService {
     }> {
 
     const { originalname, mimetype, buffer } = file;
+
     const objectBase: BaseProps = {
       originalname,
       mimetype,
@@ -133,6 +148,7 @@ export class KnowledgeService {
 
     const responseFile = await this.uploadToCloudinary(originalname, buffer);
     const { asset_id, public_id, secure_url } = responseFile;
+
     const objectFile: FileProps = {
       asset_id,
       public_id,
@@ -150,7 +166,9 @@ export class KnowledgeService {
 
   private uploadToCloudinary(
     originalname: string,
-    buffer: Buffer): Promise<UploadApiResponse> {
+    buffer: Buffer
+  ): Promise<UploadApiResponse> {
+
     const optionsCloudinary: UploadApiOptions = {
       resource_type: 'raw',
       folder: 'ia-chatbot',
@@ -170,25 +188,6 @@ export class KnowledgeService {
     });
   }
 
-  private getTextContext(
-    secure_url: string,
-    mimetype: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.downloadFormData(secure_url, function (data) {
-        if (data) {
-          textract.fromBufferWithMime(mimetype, data,
-            function (error, text) {
-              if (error) {
-                reject(error);
-              } else {
-                resolve(text);
-              }
-            })
-        }
-      });
-    });
-  }
-
   private downloadFormData(
     urlStr: string,
     callback: (data: Buffer) => void) {
@@ -203,6 +202,26 @@ export class KnowledgeService {
         .on('end', function () {
           callback(Buffer.concat(data));
         });
+    });
+  }
+
+  private getTextContext(
+    secure_url: string,
+    mimetype: string
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.downloadFormData(secure_url, function (data) {
+        if (data) {
+          textract.fromBufferWithMime(mimetype, data,
+            function (error, text) {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(text);
+              }
+            })
+        }
+      });
     });
   }
 
@@ -239,5 +258,41 @@ export class KnowledgeService {
       ...knowledgeBase,
       knowledgeFile
     };
+  }
+
+  @UseFilters(AllExceptionFilter)
+  async remove(id: number): Promise<Knowledge> {
+    const response = await this.prismaService.knowledge.findFirst({
+      where: { id },
+      select: {
+        memberOnKnowledge: {
+          select: { member_id: true }
+        },
+        _count: {
+          select: { knowledgeBase: true },
+        }
+      }
+    });
+
+    const knowledge = await this.prismaService.knowledge.delete({
+      where: { id }
+    });
+
+    if (knowledge) {
+      if (response) { // Si tiene Documentos Registrados
+        const { member_id } = response.memberOnKnowledge[0];
+        const counter = -response._count.knowledgeBase;
+        //  // Log item: "knowledge"
+        const objetMemberLog = {
+          item: "Document",
+          counter,
+          member_id
+        };
+        await this.prismaService.memberLog.create({
+          data: { ...objetMemberLog }
+        })
+      }
+    }
+    return knowledge
   }
 }
