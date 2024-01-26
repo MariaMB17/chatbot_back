@@ -10,38 +10,43 @@ export class BotsService {
   constructor(private readonly prismaService: MysqlPrismaService) { }
 
   async create(createBotDto: CreateBotDto): Promise<Bot> {
-    const member_id = createBotDto.member_id;
+    const { knowledgeIds, member_id } = createBotDto;
+    if (knowledgeIds.length === 0) {
+      throw new Error('No knowledge provided');
+    }
 
-    const result = await this.prismaService.bot.create({
+    const response = await this.prismaService.bot.create({
       data: { ...createBotDto.bot }
     })
 
-    const knowledgeOnBot = createBotDto.knowledgeIds.map((knowledge_id) => {
-      return { bot_id: result.id, knowledge_id };
-    });
+    if (response) {
+      const knowledgeOnBot = createBotDto.knowledgeIds.map((knowledge_id) => {
+        return { bot_id: response.id, knowledge_id };
+      });
 
-    await this.prismaService.knowledgeOnBot.createMany({
-      data: knowledgeOnBot,
-    });
+      await this.prismaService.knowledgeOnBot.createMany({
+        data: { ...knowledgeOnBot },
+      });
 
-    await this.prismaService.memberOnBot.create({
-      data: {
-        bot_id: result.id,
+      await this.prismaService.memberOnBot.create({
+        data: {
+          bot_id: response.id,
+          member_id
+        }
+      })
+
+      // Log item: "bot"
+      const objetMemberLog = {
+        item: "Bot",
+        counter: 1,
         member_id
-      }
-    })
+      };
 
-    // Log item: "bot"
-    const objetMemberLog = {
-      item: "Bot",
-      counter: 1,
-      member_id
-    };
-
-    await this.prismaService.memberLog.create({
-      data: { ...objetMemberLog }
-    })
-    return result
+      await this.prismaService.memberLog.create({
+        data: { ...objetMemberLog }
+      })
+    }
+    return response
   }
 
   @UseFilters(AllExceptionFilter)

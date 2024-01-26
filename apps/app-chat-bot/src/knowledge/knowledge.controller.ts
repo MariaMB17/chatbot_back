@@ -60,6 +60,12 @@ export class KnowledgeController {
     return this.knowledgeService.remove(id);
   }
 
+  @Delete('document/:id')
+  @ResponseMessage('Registro Eliminado')
+  removeDocument(@Param('id', ParseIntPipe) id: number) {
+    return this.knowledgeService.removeDocument(id);
+  }
+
   @Post('upload')
   @ResponseMessage('Archivo Subido')
   @UseInterceptors(FilesInterceptor('files'))

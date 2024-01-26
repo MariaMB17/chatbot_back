@@ -37,7 +37,8 @@ export class KnowledgeService {
   constructor(private readonly prismaService: MysqlPrismaService) { cloudinary.config() }
 
   @UseFilters(AllExceptionFilter)
-  async create(createKnowledgeDto: CreateKnowledgeDto): Promise<Knowledge | null> {
+  async create(createKnowledgeDto: CreateKnowledgeDto):
+    Promise<Knowledge | null> {
 
     const { member_id } = createKnowledgeDto;
     const result = await this.prismaService.knowledge.create({
@@ -97,8 +98,9 @@ export class KnowledgeService {
   }
 
   @UseFilters(AllExceptionFilter)
-  async update(id: number, updateKnowledgeDto:
-    UpdateKnowledgeDto): Promise<Knowledge> {
+  async update(id: number, updateKnowledgeDto: UpdateKnowledgeDto):
+    Promise<Knowledge> {
+
     const result = await this.prismaService.knowledge.update({
       where: { id },
       data: {
@@ -294,5 +296,13 @@ export class KnowledgeService {
       }
     }
     return knowledge
+  }
+
+  @UseFilters(AllExceptionFilter)
+  async removeDocument(id: number): Promise<KnowledgeFile> {
+    const response = await this.prismaService.knowledgeFile.delete({
+      where: { id }
+    })
+    return response
   }
 }
