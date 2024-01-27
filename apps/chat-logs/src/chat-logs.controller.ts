@@ -1,12 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
-import { ChatLogsService } from './chat-logs.service';
+import { Controller, Get } from "@nestjs/common"; 
 
-@Controller()
-export class ChatLogsController {
-  constructor(private readonly chatLogsService: ChatLogsService) {}
-
-  @Get()
-  getHello(): string {
-    return this.chatLogsService.getHello();
-  }
+@Controller('/')
+export class ChatController {
+    @Get()
+    findAll(): string {
+        return 
+    }
 }

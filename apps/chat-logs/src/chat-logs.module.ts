@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ChatLogsController } from './chat-logs.controller';
-import { ChatLogsService } from './chat-logs.service';
+import { ChatModule } from '../chat/chat.module';
+import { ChatController } from './chat-logs.controller';
+import { ChatService } from '../chat/chat.service';
 
 @Module({
-  imports: [],
-  controllers: [ChatLogsController],
-  providers: [ChatLogsService],
+  imports: [ChatModule],
+  controllers: [ChatController],
+  providers: [ChatService],
 })
 export class ChatLogsModule {}
