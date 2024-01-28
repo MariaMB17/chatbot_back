@@ -36,6 +36,54 @@ interface FileProps {
 export class KnowledgeService {
   constructor(private readonly prismaService: MysqlPrismaService) { cloudinary.config() }
 
+  async findFilteredPages(
+    query: string,
+    currentPage: number
+  ): Promise<any[] | null> {
+
+    const ITEMS_PER_PAGE = 6;
+    const skipItems = (currentPage - 1) * ITEMS_PER_PAGE;
+
+    const response = await this.prismaService.knowledge.findMany({
+      where: {
+        name: {
+          contains: query,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: ITEMS_PER_PAGE,
+      skip: skipItems,
+      include: {
+        knowledgeBase: {
+          select: {
+            id: true,
+          },
+        },
+      }
+    });
+
+    const knowledgeWithDocument = response.map(knowledge => ({
+      ...knowledge,
+      documents: knowledge.knowledgeBase.length.toString(),
+    }));
+
+    return knowledgeWithDocument;
+  }
+
+  @UseFilters(AllExceptionFilter)
+  async findCountRecords(query: string): Promise<Number> {
+    const response = await this.prismaService.knowledge.count({
+      where: {
+        name: {
+          contains: query,
+        },
+      },
+    });
+    return response;
+  }
+
   @UseFilters(AllExceptionFilter)
   async create(createKnowledgeDto: CreateKnowledgeDto):
     Promise<Knowledge | null> {

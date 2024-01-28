@@ -9,6 +9,7 @@ import { UpdateBotDto } from './dto/update-bot.dto';
 export class BotsService {
   constructor(private readonly prismaService: MysqlPrismaService) { }
 
+  @UseFilters(AllExceptionFilter)
   async create(createBotDto: CreateBotDto): Promise<Bot> {
     const { knowledgeIds, member_id } = createBotDto;
     if (knowledgeIds.length === 0) {
@@ -25,7 +26,7 @@ export class BotsService {
       });
 
       await this.prismaService.knowledgeOnBot.createMany({
-        data: { ...knowledgeOnBot },
+        data: knowledgeOnBot,
       });
 
       await this.prismaService.memberOnBot.create({
@@ -102,10 +103,12 @@ export class BotsService {
     });
   }
 
+  @UseFilters(AllExceptionFilter)
   update(id: number, updateBotDto: UpdateBotDto) {
     return `This action updates a #${id} bot`;
   }
 
+  @UseFilters(AllExceptionFilter)
   async remove(id: number): Promise<Bot> {
     const result = await this.prismaService.bot.findFirst({
       where: { id },

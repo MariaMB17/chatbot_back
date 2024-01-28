@@ -53,9 +53,10 @@ model MemberOnBot {
   @@map("memberonbots")
 }
 
+//se especifica el campo name como unico
 model Bot {
   id             Int               @id @default(autoincrement())
-  name           String
+  name           String            @unique
   description    String
   modelgpt       String
   personality    String?
@@ -111,9 +112,10 @@ model Member {
   @@map("members")
 }
 
+// se cambia el campo "descripcion" a "name" y se especifica como unico
 model Knowledge {
   id                Int                  @id @default(autoincrement())
-  description       String
+  name              String               @unique
   knowledgeBase     KnowledgeBase[]
   memberOnKnowledge MemberOnKnowledge[]
   knowledgeOnBot    KnowledgeOnBot[]
@@ -188,9 +190,10 @@ model Company {
   @@map("companies")
 }
 
+// se especifica campo name como unico
 model Plan {
   id          Int       @id @default(autoincrement())
-  name        String
+  name        String    @unique
   description String
   cost        Decimal   @db.Decimal(10, 2)
   credits     Int

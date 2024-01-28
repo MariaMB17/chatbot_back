@@ -20,6 +20,21 @@ import { KnowledgeService } from './knowledge.service';
 export class KnowledgeController {
   constructor(private readonly knowledgeService: KnowledgeService) { }
 
+
+  @ResponseMessage('Filtrado por Paginas')
+  @Get('filtered/:query/:currentPage')
+  findFilteredPages(
+    @Param('query') query: string,
+    @Param('currentPage', ParseIntPipe) currentPage: number) {
+    return this.knowledgeService.findFilteredPages(query, currentPage)
+  }
+
+  @ResponseMessage('Cantidad de Registros Encontrados')
+  @Get('records/:query')
+  findCountRecords(@Param('query') query: string) {
+    return this.knowledgeService.findCountRecords(query)
+  }
+
   @Post()
   @ResponseMessage('Registro Creado')
   create(

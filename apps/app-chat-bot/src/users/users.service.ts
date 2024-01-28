@@ -11,7 +11,7 @@ export class UsersService {
   constructor(private readonly prismaService: MysqlPrismaService) { }
 
   create(createUserDto: CreateUserDto) {
-    const {name} = createUserDto
+    const { name } = createUserDto
     return from(bcrypt.hash(
       createUserDto.user.password,
       +process.env.BCRYPT_SALT,
@@ -25,7 +25,7 @@ export class UsersService {
         })).pipe(
           switchMap((user) => {
             return iif(
-              () => !!createUserDto?.profile,              
+              () => !!createUserDto?.profile,
               from(this.prismaService.profile.create({
                 data: {
                   ...createUserDto.profile,
@@ -34,7 +34,7 @@ export class UsersService {
               })),
               of(null),
             ).pipe(
-              switchMap((profile) => from([{user, profile}])),
+              switchMap((profile) => from([{ user, profile }])),
               catchError((error) => of({ msg: 'No se pudo crear el usuario y el perfil', error }))
             ).pipe(
               switchMap((data) => {
@@ -43,27 +43,27 @@ export class UsersService {
                     name
                   }
                 })).pipe(
-                  switchMap((company) => from([{...data, company}])),
+                  switchMap((company) => from([{ ...data, company }])),
                   catchError((error) => of({ msg: 'Error al consultar la compañia', error }))
                 )
               })
             ).pipe(
               switchMap((dataRes) => {
                 return iif(
-                  () => !!dataRes['company'],  
-                  of(dataRes['company']),            
+                  () => !!dataRes['company'],
+                  of(dataRes['company']),
                   from(this.prismaService.company.create({
                     data: { name }
                   })),
                 ).pipe(
-                  tap((dataCompany) => dataRes['company'] = dataCompany ),
+                  tap((dataCompany) => dataRes['company'] = dataCompany),
                   switchMap(() => from([dataRes])),
                   catchError((error) => of({ msg: 'Error al consultar la compañia', error }))
                 )
               })
             ).pipe(
               switchMap((dataResponse) => {
-                return from( this.prismaService.member.create({
+                return from(this.prismaService.member.create({
                   data: {
                     userId: user.id,
                     companyId: dataResponse['company'].id,
@@ -73,7 +73,7 @@ export class UsersService {
                   map((member) => {
                     return {
                       ...dataResponse,
-                      member                      
+                      member
                     }
                   }),
                   catchError((error) => of({ msg: 'Error al crear el miembro', error }))
