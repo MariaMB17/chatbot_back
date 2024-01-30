@@ -36,6 +36,7 @@ interface FileProps {
 export class KnowledgeService {
   constructor(private readonly prismaService: MysqlPrismaService) { cloudinary.config() }
 
+  @UseFilters(AllExceptionFilter)
   async findFilteredPages(
     query: string,
     currentPage: number
@@ -135,13 +136,13 @@ export class KnowledgeService {
   async findOne(id: number): Promise<Knowledge> {
     return await this.prismaService.knowledge.findFirst({
       where: { id },
-      include: {
-        knowledgeBase: {
-          include: {
-            knowledgeFile: true
-          }
-        }
-      }
+      // include: {
+      //   knowledgeBase: {
+      //     include: {
+      //       knowledgeFile: true
+      //     }
+      //   }
+      // }
     });
   }
 
@@ -149,13 +150,14 @@ export class KnowledgeService {
   async update(id: number, updateKnowledgeDto: UpdateKnowledgeDto):
     Promise<Knowledge> {
 
-    const result = await this.prismaService.knowledge.update({
+    const response = await this.prismaService.knowledge.update({
       where: { id },
       data: {
         ...updateKnowledgeDto.knowledge,
+        updatedAt: new Date(),
       },
     });
-    return result
+    return response
   }
 
   // Subida de Archivos
