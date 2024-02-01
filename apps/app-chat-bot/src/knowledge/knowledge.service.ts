@@ -32,6 +32,19 @@ interface FileProps {
   knowledgeBase_id: number;
 }
 
+export interface KnowledgeBaseId {
+  id: number;
+}
+
+export interface KnowledgeRecordWithDocuments {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  knowledgeBase: KnowledgeBaseId[];
+  documents: string;
+}
+
 @Injectable()
 export class KnowledgeService {
   constructor(private readonly prismaService: MysqlPrismaService) { cloudinary.config() }
@@ -40,7 +53,7 @@ export class KnowledgeService {
   async findFilteredPages(
     query: string,
     currentPage: number
-  ): Promise<any[] | null> {
+  ): Promise<KnowledgeRecordWithDocuments[] | null> {
 
     const ITEMS_PER_PAGE = 6;
     const skipItems = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -65,7 +78,7 @@ export class KnowledgeService {
       }
     });
 
-    const knowledgeWithDocument = response.map(knowledge => ({
+    const knowledgeWithDocument: KnowledgeRecordWithDocuments[] = response.map(knowledge => ({
       ...knowledge,
       documents: knowledge.knowledgeBase.length.toString(),
     }));
@@ -107,16 +120,12 @@ export class KnowledgeService {
   // solo probar el chat para obtener la cadena de texto
   @UseFilters(AllExceptionFilter)
   async textContent(id: number): Promise<String> {
-    const result = await this.prismaService.knowledge.findFirst({
+    const result = await this.prismaService.knowledgeBase.findFirst({
       where: { id },
-      select: {
-        knowledgeBase: {
-          select: { textContent: true }
-        }
-      }
+      select: { textContent: true }
     });
 
-    return result.knowledgeBase[0].textContent;
+    return result.textContent;
   }
 
   @UseFilters(AllExceptionFilter)
@@ -136,13 +145,13 @@ export class KnowledgeService {
   async findOne(id: number): Promise<Knowledge> {
     return await this.prismaService.knowledge.findFirst({
       where: { id },
-      // include: {
-      //   knowledgeBase: {
-      //     include: {
-      //       knowledgeFile: true
-      //     }
-      //   }
-      // }
+      include: {
+        knowledgeBase: {
+          include: {
+            knowledgeFile: true
+          }
+        }
+      }
     });
   }
 
@@ -349,8 +358,8 @@ export class KnowledgeService {
   }
 
   @UseFilters(AllExceptionFilter)
-  async removeDocument(id: number): Promise<KnowledgeFile> {
-    const response = await this.prismaService.knowledgeFile.delete({
+  async removeBase(id: number): Promise<KnowledgeBase> {
+    const response = await this.prismaService.knowledgeBase.delete({
       where: { id }
     })
     return response

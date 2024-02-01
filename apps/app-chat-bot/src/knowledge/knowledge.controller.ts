@@ -20,7 +20,6 @@ import { KnowledgeService } from './knowledge.service';
 export class KnowledgeController {
   constructor(private readonly knowledgeService: KnowledgeService) { }
 
-
   @ResponseMessage('Filtrado por Paginas')
   @Get('filtered/:query/:currentPage')
   findFilteredPages(
@@ -75,10 +74,10 @@ export class KnowledgeController {
     return this.knowledgeService.remove(id);
   }
 
-  @Delete('document/:id')
-  @ResponseMessage('Registro Eliminado')
-  removeDocument(@Param('id', ParseIntPipe) id: number) {
-    return this.knowledgeService.removeDocument(id);
+  @Delete('base/:id')
+  @ResponseMessage('Documento Eliminado')
+  removeBase(@Param('id', ParseIntPipe) id: number) {
+    return this.knowledgeService.removeBase(id);
   }
 
   @Post('upload')
