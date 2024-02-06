@@ -1,6 +1,6 @@
 import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Injectable } from '@nestjs/common';
-import { Observable, from } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { Member } from './entities/member.entity';
@@ -15,7 +15,8 @@ export class MembersService {
   }
 
   findAllTest(): Observable<Member[]> {
-    return from(this.prismaService.member.findMany({
+    return of([])
+    /*return from(this.prismaService.member.findMany({
       select: {
         id: true,
         role: true,
@@ -85,7 +86,7 @@ export class MembersService {
           }
         }
       }
-    }))
+    }))*/
   }
   findAll(): Observable<Member[]> {
     return from(this.prismaService.member.findMany({
