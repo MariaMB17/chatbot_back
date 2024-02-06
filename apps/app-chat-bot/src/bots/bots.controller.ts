@@ -41,6 +41,7 @@ export class BotsController {
   }
 
   @Delete(':id')
+  @ResponseMessage('Registro Eliminado')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.botsService.remove(id);
   }

@@ -38,7 +38,7 @@ export class MembersService {
             knowledge: {
               select: {
                 id: true,
-                description: true,
+                name: true,
                 knowledgeBase: {
                   select: {
                     id: true,

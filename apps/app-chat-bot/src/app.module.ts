@@ -8,15 +8,16 @@ import { BotsModule } from './bots/bots.module';
 import { CompaniesModule } from './companies/companies.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { DatabaseModule } from './database/database.module';
+import { MysqlPrismaService } from './database/mysql-prisma.service';
 import { ExchangerateModule } from './exchangerate/exchangerate.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { KnowledgeModule } from './knowledge/knowledge.module';
 import { MembersModule } from './members/members.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { PaymentMethodsOnInvoicesModule } from './payment-methods-on-invoices/payment-methods-on-invoices.module';
 import { PlanModule } from './plan/plan.module';
 import { ProfileModule } from './profile/profile.module';
 import { UsersModule } from './users/users.module';
-import { KnowledgeModule } from './knowledge/knowledge.module';
 
 @Module({
   imports: [
@@ -41,6 +42,6 @@ import { KnowledgeModule } from './knowledge/knowledge.module';
     KnowledgeModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MysqlPrismaService],
 })
 export class AppModule { }
