@@ -3,10 +3,10 @@ import { Prisma } from '@prisma/mysql/client';
 import { MysqlPrismaService } from './database/mysql-prisma.service';
 
 @Injectable()
-export class AppService /*implements OnModuleInit*/ {
+export class AppService implements OnModuleInit {
   constructor(private readonly prismaService: MysqlPrismaService) { }
 
-  /*async onModuleInit() {
+  async onModuleInit() {
     try {
       const planExists = await this.prismaService.plan.findUnique({
         where: { name: "Free" },
@@ -32,7 +32,7 @@ export class AppService /*implements OnModuleInit*/ {
         throw error;
       }
     }
-  }*/
+  }
 
   async listarUsuarios(): Promise<string[]> {
     let arreglo: string[] = ['1', '2', '3', '4'];
