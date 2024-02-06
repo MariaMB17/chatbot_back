@@ -1,22 +1,32 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { MysqlPrismaService } from '../database/mysql-prisma.service';
-import { MembersService } from '../members/members.service';
-import { ProfileModule } from '../profile/profile.module';
-import { UsersService } from '../users/users.service';
+//import { UsersService } from '../users/users.service';
 import { CompaniesController } from './companies.controller';
-import { CompaniesService } from './companies.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [ProfileModule],
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'company-service',
+        transport: Transport.RMQ,
+        options: {
+          urls: [
+            'amqps://suzhaeoo:nXe5NWVYBSnfQmXCLY2cwnAOB1xOEeSR@beaver.rmq.cloudamqp.com/suzhaeoo'
+          ],
+          queue: 'auth-queue',
+          queueOptions: {
+            durable: false,
+          },
+        },
+      }
+    ]),
+  ],
   controllers: [CompaniesController],
   providers: [
-    CompaniesService,
-    MysqlPrismaService,
-    MembersService,
     JwtService,
-    UsersService
-  ],
-  exports: [CompaniesService]
+    //UsersService
+  ]
+  //exports: [CompaniesService]
 })
 export class CompaniesModule { }

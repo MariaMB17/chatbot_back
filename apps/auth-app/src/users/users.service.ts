@@ -1,15 +1,14 @@
-import { HttpStatus, Injectable, UseFilters } from '@nestjs/common';
-import { User } from '@prisma/mysql/client';
-import * as bcrypt from 'bcrypt';
-import { catchError, from, iif, map, of, switchMap, tap } from 'rxjs';
-import { AllExceptionFilter } from '../allexceptionsfilter';
-import { MysqlPrismaService } from '../database/mysql-prisma.service';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from '@prisma/mysql/client';
+import { from, of, Observable, switchMap, iif, catchError, tap, map } from 'rxjs';
+import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: MysqlPrismaService) { }
-
   create(createUserDto: CreateUserDto) {
     const {name} = createUserDto
     return from(bcrypt.hash(
@@ -88,18 +87,36 @@ export class UsersService {
     )
   }
 
-  @UseFilters(AllExceptionFilter)
-  async findAll(): Promise<User[]> {
-    return await this.prismaService.user.findMany({
+  findAll(): Observable<User[]>  {
+    return from(this.prismaService.user.findMany({
       include: {
         Profile: {},
       },
-    });
+    }));
   }
 
-  @UseFilters(AllExceptionFilter)
-  async findOne(id: number): Promise<User> {
-    return await this.prismaService.user.findFirst({
+  findUserByEmail(email: string): Observable<User> {
+    return from(this.prismaService.user.findFirst({
+      where: {
+        email,
+      },
+      include: {
+        Profile: {
+          include: {},
+        },
+        Member: {
+          include: {
+            company: {
+              include: {},
+            }
+          },
+        }
+      },
+    }));
+  }
+
+  findOne(id: number): Observable<User> {
+    return from(this.prismaService.user.findFirst({
       where: {
         id,
       },
@@ -115,13 +132,16 @@ export class UsersService {
           },
         }
       },
-    });
+    }));
   }
 
-  @UseFilters(AllExceptionFilter)
-  async remove(id: number): Promise<User> {
-    return await this.prismaService.user.delete({
+  update(id: number, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${id} user`;
+  }
+
+  remove(id: number): Observable<User> {
+    return from(this.prismaService.user.delete({
       where: { id }
-    })
+    }))
   }
 }

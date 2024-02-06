@@ -1,4 +1,3 @@
-import { CompaniesService } from '@Appchatbot/companies/companies.service';
 import { Controller, HttpStatus } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { Errors } from 'core/interface/interface-error';
@@ -11,8 +10,7 @@ import { MembersService } from './members.service';
 @Controller()
 export class MembersController {
   constructor(
-    private readonly membersService: MembersService,
-    private readonly companieService: CompaniesService) { }
+    private readonly membersService: MembersService) { }
 
   @EventPattern('createMember')
   create(@Payload() createMemberDto: CreateMemberDto): Observable<Member | Errors> {

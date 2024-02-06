@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { UsersService } from '@Appchatbot/users/users.service';
 
 @Module({
   imports: [
@@ -23,11 +20,6 @@ import { UsersService } from '@Appchatbot/users/users.service';
       }
     ]),
   ],
-  controllers: [AuthController],
-  providers: [
-    AuthService,
-    MysqlPrismaService,
-    UsersService
-  ],
+  controllers: [AuthController]
 })
 export class AuthModule { }

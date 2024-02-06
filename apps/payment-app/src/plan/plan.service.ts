@@ -38,7 +38,11 @@ export class PlanService {
       include: {
         member: {
           include: {
-            user: {}
+            user: {
+              include: {
+                Profile: {}
+              }
+            }
           }
         },
         invoice: {
