@@ -8,6 +8,16 @@ datasource db {
   url      = env("MYSQL_DATABASE_URL")
 }
 
+model KnowledgeOnBot {
+  bot          Bot       @relation(fields: [bot_id], references: [id])
+  bot_id       Int
+  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id])
+  knowledge_id Int
+
+  @@id([bot_id, knowledge_id])
+  @@map("knowledgenbots")
+}
+
 model ItemOnChat {
   id      Int     @id @default(autoincrement())
   ask     String
@@ -31,29 +41,6 @@ model Chat {
   @@map("chats")
 }
 
-// se agrego la eliminacion en cascada
-model KnowledgeOnBot {
-  bot          Bot       @relation(fields: [bot_id], references: [id], onDelete: Cascade)
-  bot_id       Int
-  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
-  knowledge_id Int
-
-  @@id([bot_id, knowledge_id])
-  @@map("knowledgenbots")
-}
-
-// se agrego la eliminacion en cascada
-model MemberOnBot {
-  id        Int     @id @default(autoincrement())
-  member    Member @relation(fields: [member_id], references: [id], onDelete: Cascade)
-  member_id Int
-  bot       Bot    @relation(fields: [bot_id], references: [id], onDelete: Cascade)
-  bot_id    Int
-
-  @@map("memberonbots")
-}
-
-//se especifica el campo name como unico
 model Bot {
   id             Int               @id @default(autoincrement())
   name           String            @unique
@@ -70,7 +57,16 @@ model Bot {
   @@map("bots")
 }
 
-// se agrego la eliminacion en cascada
+model MemberOnBot {
+  id        Int     @id @default(autoincrement())
+  member    Member @relation(fields: [member_id], references: [id])
+  member_id Int
+  bot       Bot    @relation(fields: [bot_id], references: [id])
+  bot_id    Int
+
+  @@map("memberonbots")
+}
+
 model MemberOnKnowledge {
   id           Int        @id @default(autoincrement())
   member       Member    @relation(fields: [member_id], references: [id])
@@ -193,7 +189,7 @@ model Company {
 // se especifica campo name como unico
 model Plan {
   id          Int       @id @default(autoincrement())
-  name        String    @unique
+  name        String
   description String
   cost        Decimal   @db.Decimal(10, 2)
   credits     Int
