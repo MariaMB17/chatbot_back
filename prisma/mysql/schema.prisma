@@ -8,10 +8,11 @@ datasource db {
   url      = env("MYSQL_DATABASE_URL")
 }
 
+// se agrego la eliminacion en cascada
 model KnowledgeOnBot {
-  bot          Bot       @relation(fields: [bot_id], references: [id])
+  bot          Bot       @relation(fields: [bot_id], references: [id], onDelete: Cascade)
   bot_id       Int
-  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id])
+  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
   knowledge_id Int
 
   @@id([bot_id, knowledge_id])
@@ -19,7 +20,7 @@ model KnowledgeOnBot {
 }
 
 model ItemOnChat {
-  id      Int    @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   ask     String
   answer  String
   chat    Chat   @relation(fields: [chat_id], references: [id], onDelete: Cascade)
@@ -29,21 +30,22 @@ model ItemOnChat {
 }
 
 model Chat {
-  id          Int          @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   descripcion String
   member      Member       @relation(fields: [member_id], references: [id])
   member_id   Int
   bot         Bot          @relation(fields: [bot_id], references: [id])
   bot_id      Int
   itemOnChat  ItemOnChat[]
-  createdAt   DateTime     @default(now())
+  createdAt   DateTime      @default(now())
 
   @@map("chats")
 }
 
+//se especifica el campo name como unico
 model Bot {
-  id             Int              @id @default(autoincrement())
-  name           String
+  id             Int               @id @default(autoincrement())
+  name           String            @unique
   description    String
   modelgpt       String
   personality    String?
@@ -51,27 +53,29 @@ model Bot {
   memberOnBot    MemberOnBot[]
   knowledgeOnBot KnowledgeOnBot[]
   chat           Chat[]
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   @@map("bots")
 }
 
+// se agrego la eliminacion en cascada
 model MemberOnBot {
-  id        Int    @id @default(autoincrement())
-  member    Member @relation(fields: [member_id], references: [id])
+  id        Int     @id @default(autoincrement())
+  member    Member @relation(fields: [member_id], references: [id], onDelete: Cascade)
   member_id Int
-  bot       Bot    @relation(fields: [bot_id], references: [id])
+  bot       Bot    @relation(fields: [bot_id], references: [id], onDelete: Cascade)
   bot_id    Int
 
   @@map("memberonbots")
 }
 
+// se agrego la eliminacion en cascada
 model MemberOnKnowledge {
-  id           Int       @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   member       Member    @relation(fields: [member_id], references: [id])
   member_id    Int
-  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id])
+  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
   knowledge_id Int
 
   @@map("memberonknowledges")
@@ -79,20 +83,20 @@ model MemberOnKnowledge {
 
 // Item = ('Credit', 'Document', 'Bot', 'Member')
 model MemberLog {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   item      String
   counter   Int
   member    Member   @relation(fields: [member_id], references: [id])
   member_id Int
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   @@map("memberlogs")
 }
 
 model Member {
-  id                Int                 @id @default(autoincrement())
+  id                Int                  @id @default(autoincrement())
   user              User?               @relation(fields: [userId], references: [id])
-  userId            Int                 @unique
+  userId            Int                  @unique
   company           Company             @relation(fields: [companyId], references: [id])
   companyId         Int
   plan              Plan                @relation(fields: [planId], references: [id])
@@ -101,40 +105,41 @@ model Member {
   memberOnBot       MemberOnBot[]
   memberLog         MemberLog[]
   chat              Chat[]
-  role              String              @default("ADMIN")
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  role              String               @default("ADMIN")
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
 
   @@map("members")
 }
 
+// se cambia el campo "descripcion" a "name" y se especifica como unico
 model Knowledge {
-  id                Int                 @id @default(autoincrement())
-  description       String
+  id                Int                  @id @default(autoincrement())
+  name              String               @unique
   knowledgeBase     KnowledgeBase[]
   memberOnKnowledge MemberOnKnowledge[]
   knowledgeOnBot    KnowledgeOnBot[]
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
 
   @@map("knowledges")
 }
 
 model KnowledgeBase {
-  id            Int             @id @default(autoincrement())
+  id            Int              @id @default(autoincrement())
   originalname  String
   mimetype      String
-  textContent   String          @db.LongText
+  textContent   String           @db.LongText
   knowledge     Knowledge       @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
   knowledge_id  Int
   knowledgeFile KnowledgeFile[]
-  createdAt     DateTime        @default(now())
+  createdAt     DateTime         @default(now())
 
   @@map("knowledgebases")
 }
 
 model KnowledgeFile {
-  id               Int           @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   asset_id         String
   public_id        String
   secure_url       String
@@ -145,11 +150,11 @@ model KnowledgeFile {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   Member    Member?
   Profile   Profile?
 
@@ -157,28 +162,28 @@ model User {
 }
 
 model Profile {
-  id         Int      @id @default(autoincrement())
-  userId     Int?     @unique
+  id         Int       @id @default(autoincrement())
+  userId     Int?      @unique
   firstname  String
   lastname   String
   mobilphone String?
   address    String
   age        Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   User       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("profiles")
 }
 
 model Company {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
   rif         String?
   addres      String?
   numberphone String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   member      Member[]
   invoice     Invoice[]
 
@@ -186,105 +191,105 @@ model Company {
 }
 
 model Plan {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   description String
-  cost        Decimal  @db.Decimal(10, 2)
+  cost        Decimal   @db.Decimal(10, 2)
   credits     Int
   bots        Int
   documents   Int
   members     Int
   invoice     Invoice?
   member      Member[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map("plans")
 }
 
 model Invoice {
-  id                     Int                      @id @default(autoincrement())
+  id                     Int                       @id @default(autoincrement())
   fecha                  DateTime
-  number                 String                   @unique
-  total                  Decimal                  @db.Decimal(10, 2)
+  number                 String                    @unique
+  total                  Decimal                   @db.Decimal(10, 2)
   plan                   Plan                     @relation(fields: [planId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  planId                 Int                      @unique
+  planId                 Int                       @unique
   PaymentMethodOnInvoice PaymentMethodOnInvoice[]
   company                Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   companyId              Int
   currency               Currency                 @relation(fields: [currencyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  currencyId             Int                      @unique
-  createdAt              DateTime                 @default(now())
-  updatedAt              DateTime                 @updatedAt
+  currencyId             Int                       @unique
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
 
   @@map("invoices")
 }
 
 model Currency {
-  id                 Int                  @id @default(autoincrement())
-  code               String               @unique
+  id                 Int                   @id @default(autoincrement())
+  code               String                @unique
   description        String
-  symbol             String               @unique
+  symbol             String                @unique
   invoice            Invoice?
   associatedCurrency AssociatedCurrency[]
   exchangeRate       ExchangeRate?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
 
   @@map("currencies")
 }
 
 model PaymentMethod {
-  id          Int                      @id @default(autoincrement())
+  id          Int                       @id @default(autoincrement())
   description String
   invoice     PaymentMethodOnInvoice[]
-  createdAt   DateTime                 @default(now())
-  updatedAt   DateTime                 @updatedAt
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
 
   @@map("paymentMethods")
 }
 
 model PaymentMethodOnInvoice {
-  id              Int            @id @default(autoincrement())
+  id              Int             @id @default(autoincrement())
   invoice         Invoice        @relation(fields: [invoiceId], references: [id])
   invoiceId       Int
   PaymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
-  paymentMethodId Int            @unique
+  paymentMethodId Int             @unique
   expirationDate  DateTime
   bank            String
-  date            DateTime       @default(now())
-  amount          Decimal        @db.Decimal(10, 2)
+  date            DateTime        @default(now())
+  amount          Decimal         @db.Decimal(10, 2)
   numReference    String
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   @@map("paymentMethodsOnInvoices")
 }
 
 model AssociatedCurrency {
-  id           Int           @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   description  String
   currency     Currency      @relation(fields: [currencyId], references: [id])
   currencyId   Int
   exchangeRate ExchangeRate?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   @@map("associatedCurrencies")
 }
 
 model ExchangeRate {
-  id                 Int                @id @default(autoincrement())
+  id                 Int                 @id @default(autoincrement())
   description        String
   currencybase       Currency           @relation(fields: [currencyIdbaseId], references: [id])
-  currencyIdbase     Int                @unique
-  currencyIdbaseId   Int                @unique
+  currencyIdbase     Int                 @unique
+  currencyIdbaseId   Int                 @unique
   foreigncurrency    AssociatedCurrency @relation(fields: [foreigncurrencyId], references: [id])
-  foreigncurrencyId  Int                @unique
-  mountCurrencyBse   Decimal            @db.Decimal(10, 2)
-  currencyconversion Decimal            @db.Decimal(10, 2)
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  foreigncurrencyId  Int                 @unique
+  mountCurrencyBse   Decimal             @db.Decimal(10, 2)
+  currencyconversion Decimal             @db.Decimal(10, 2)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
   @@map("exchangeRates")
 }
