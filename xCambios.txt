@@ -1,0 +1,17 @@
+// campo name especificado como unico
+model Plan 
+
+// se cambia el campo "descripcion" a "name" y se especifica como unico
+model Knowledge 
+
+// se agrego la eliminacion en cascada
+model MemberOnKnowledge 
+
+// se agrego la eliminacion en cascada
+model MemberOnBot 
+
+//se especifica el campo name como unico
+model Bot 
+
+// se agrego la eliminacion en cascada
+model KnowledgeOnBot 

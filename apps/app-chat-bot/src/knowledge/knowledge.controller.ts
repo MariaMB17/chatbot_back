@@ -54,7 +54,7 @@ export class KnowledgeController {
   }
 
   @Get(':id')
-  @ResponseMessage('Registro Especifico')
+  @ResponseMessage('Consulta Especifica')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.knowledgeService.findOne(id);
   }

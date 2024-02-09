@@ -8,10 +8,11 @@ datasource db {
   url      = env("MYSQL_DATABASE_URL")
 }
 
+// se agrego la eliminacion en cascada
 model KnowledgeOnBot {
-  bot          Bot       @relation(fields: [bot_id], references: [id])
+  bot          Bot       @relation(fields: [bot_id], references: [id], onDelete: Cascade)
   bot_id       Int
-  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id])
+  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
   knowledge_id Int
 
   @@id([bot_id, knowledge_id])
@@ -41,6 +42,7 @@ model Chat {
   @@map("chats")
 }
 
+//se especifica el campo name como unico
 model Bot {
   id             Int               @id @default(autoincrement())
   name           String            @unique
@@ -57,16 +59,18 @@ model Bot {
   @@map("bots")
 }
 
+// se agrego la eliminacion en cascada
 model MemberOnBot {
   id        Int     @id @default(autoincrement())
-  member    Member @relation(fields: [member_id], references: [id])
+  member    Member @relation(fields: [member_id], references: [id], onDelete: Cascade)
   member_id Int
-  bot       Bot    @relation(fields: [bot_id], references: [id])
+  bot       Bot    @relation(fields: [bot_id], references: [id], onDelete: Cascade)
   bot_id    Int
 
   @@map("memberonbots")
 }
 
+// se agrego la eliminacion en cascada
 model MemberOnKnowledge {
   id           Int        @id @default(autoincrement())
   member       Member    @relation(fields: [member_id], references: [id])
@@ -186,10 +190,10 @@ model Company {
   @@map("companies")
 }
 
-// se especifica campo name como unico
+// campo name especificado como unico
 model Plan {
   id          Int       @id @default(autoincrement())
-  name        String
+  name        String    @unique
   description String
   cost        Decimal   @db.Decimal(10, 2)
   credits     Int
