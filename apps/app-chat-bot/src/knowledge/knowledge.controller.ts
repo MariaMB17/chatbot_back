@@ -34,17 +34,17 @@ export class KnowledgeController {
     return this.knowledgeService.findCountRecords(query)
   }
 
+  @Get('textContext/:id')
+  @ResponseMessage('Envio de textContent')
+  textContent(@Param('id', ParseIntPipe) id: number) {
+    return this.knowledgeService.textContent(id);
+  }
+
   @Post()
   @ResponseMessage('Registro Creado')
   create(
     @Body() createKnowledgeDto: CreateKnowledgeDto) {
     return this.knowledgeService.create(createKnowledgeDto);
-  }
-
-  @Get('textContext/:id')
-  @ResponseMessage('Envio de textContent')
-  textContent(@Param('id', ParseIntPipe) id: number) {
-    return this.knowledgeService.textContent(id);
   }
 
   @Get()
@@ -57,6 +57,12 @@ export class KnowledgeController {
   @ResponseMessage('Consulta Especifica')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.knowledgeService.findOne(id);
+  }
+
+  @Get('unique/:name')
+  @ResponseMessage('Consulta Unica')
+  findOneUnique(@Param('name') name: string) {
+    return this.knowledgeService.findOneUnique(name);
   }
 
   @Patch(':id')

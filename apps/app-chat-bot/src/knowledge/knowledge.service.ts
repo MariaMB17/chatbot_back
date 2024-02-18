@@ -142,6 +142,13 @@ export class KnowledgeService {
   }
 
   @UseFilters(AllExceptionFilter)
+  async findOneUnique(name: string): Promise<Knowledge> {
+    return await this.prismaService.knowledge.findUnique({
+      where: { name }
+    });
+  }
+
+  @UseFilters(AllExceptionFilter)
   async findOne(id: number): Promise<Knowledge> {
     return await this.prismaService.knowledge.findFirst({
       where: { id },

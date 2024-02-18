@@ -10,6 +10,43 @@ export class BotsService {
   constructor(private readonly prismaService: MysqlPrismaService) { }
 
   @UseFilters(AllExceptionFilter)
+  async findFilteredPages(
+    query: string,
+    currentPage: number
+  ): Promise<Bot[] | null> {
+
+    const ITEMS_PER_PAGE = 6;
+    const skipItems = (currentPage - 1) * ITEMS_PER_PAGE;
+
+    const response = await this.prismaService.bot.findMany({
+      where: {
+        name: {
+          contains: query,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: ITEMS_PER_PAGE,
+      skip: skipItems,
+    });
+
+    return response;
+  }
+
+  @UseFilters(AllExceptionFilter)
+  async findCountRecords(query: string): Promise<Number> {
+    const response = await this.prismaService.bot.count({
+      where: {
+        name: {
+          contains: query,
+        },
+      },
+    });
+    return response;
+  }
+
+  @UseFilters(AllExceptionFilter)
   async create(createBotDto: CreateBotDto): Promise<Bot> {
     const { knowledgeIds, member_id } = createBotDto;
     if (knowledgeIds.length === 0) {

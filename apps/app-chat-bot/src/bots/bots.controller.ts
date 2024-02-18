@@ -17,6 +17,20 @@ import { UpdateBotDto } from './dto/update-bot.dto';
 export class BotsController {
   constructor(private readonly botsService: BotsService) { }
 
+  @ResponseMessage('Filtrado por Paginas')
+  @Get('filtered/:query/:currentPage')
+  findFilteredPages(
+    @Param('query') query: string,
+    @Param('currentPage', ParseIntPipe) currentPage: number) {
+    return this.botsService.findFilteredPages(query, currentPage)
+  }
+
+  @ResponseMessage('Cantidad de Registros Encontrados')
+  @Get('records/:query')
+  findCountRecords(@Param('query') query: string) {
+    return this.botsService.findCountRecords(query)
+  }
+
   @Post()
   @ResponseMessage('Registro Creado')
   create(@Body() createBotDto: CreateBotDto) {

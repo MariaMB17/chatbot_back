@@ -1,10 +1,10 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException, Session } from '@nestjs/common';
-import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
+import { MysqlPrismaService } from '@PrismaServiceMysql';
+import { HttpStatus, Injectable, Session } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/mysql/client';
-import { MysqlPrismaService } from '@PrismaServiceMysql';
 import * as bcrypt from 'bcrypt';
 import { Errors } from 'core/interface/interface-error';
+import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
 import { createAuthDto } from './dtos/login.dto';
 
 @Injectable()
@@ -45,17 +45,30 @@ export class AuthAppService {
                     })
                   );
                 } else {
-                  return of({ msg: 'Contraseña incorrecta', status: HttpStatus.UNAUTHORIZED });
+                  return of({
+                    msg: 'Contraseña incorrecta',
+                    status: HttpStatus.UNAUTHORIZED
+                  });
                 }
               }),
-              catchError((error) => of({ msg: 'password no coincide', error, status: HttpStatus.UNAUTHORIZED }))
+              catchError((error) => of({
+                msg: 'password no coincide',
+                error,
+                status: HttpStatus.UNAUTHORIZED
+              }))
             );
         } else {
-          return of({ msg: 'No existe usuario registrado en nuestra bd con ese email', status: HttpStatus.NOT_FOUND });
+          return of({
+            msg: 'No existe usuario registrado en nuestra bd con ese email',
+            status: HttpStatus.NOT_FOUND
+          });
         }
       }),
-      catchError((error) => of({ msg: 'error al iniciar sesion', error, status: HttpStatus.CONFLICT }))
+      catchError((error) => of({
+        msg: 'error al iniciar sesion',
+        error,
+        status: HttpStatus.CONFLICT
+      }))
     );
-
   }
 }
