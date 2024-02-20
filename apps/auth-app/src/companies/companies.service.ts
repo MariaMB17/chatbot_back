@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseFilters } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
 import { Observable, from } from 'rxjs';
 import { Company } from './entities/company.entity';
+import { AllExceptionFilter } from '@Appchatbot/allexceptionsfilter';
 
 @Injectable()
 export class CompaniesService {
@@ -41,7 +42,7 @@ export class CompaniesService {
       },
     }));
   }
-
+  @UseFilters(AllExceptionFilter)
   update(id: number, updateCompanyDto: UpdateCompanyDto):Observable<Company>  {
     return from(this.prismaService.company.update({
       where: { id },

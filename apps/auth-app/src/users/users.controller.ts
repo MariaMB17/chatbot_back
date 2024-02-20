@@ -34,6 +34,7 @@ export class UsersController {
 
   @MessagePattern('findOneUser')
   findOne(@Payload() id: number) {
+    console.log(id, 'microservicio')
     return this.usersService.findOne(id).pipe(
       map((user) => user),
       catchError((error) => of({ msg: 'Error al buscar al usuario', error, status: HttpStatus.CONFLICT }))

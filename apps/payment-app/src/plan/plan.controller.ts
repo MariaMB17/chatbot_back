@@ -28,6 +28,15 @@ export class PlanController {
     );
   }
 
+  @EventPattern('filteredPlan')
+  getFilteredPlans(@Payload() searchString: string): Observable<Plan | Errors> {
+    console.log(searchString, 'microservicio')
+    return this.planService.getFilteredPlans(searchString).pipe(
+      map((listPlan) => listPlan),
+      catchError((error) => of({ msg: 'error al encontrar el plan', error, status: HttpStatus.CONFLICT }))
+    );
+  }
+
   @EventPattern('findOnePlan')
   findOne(@Payload() id: number): Observable<Plan> {
     return this.planService.findOne(id).pipe(

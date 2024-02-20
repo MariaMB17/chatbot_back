@@ -20,13 +20,6 @@ export class MembersController {
     );
   }
 
-  @EventPattern('findAllMembersTest')
-  findAllTest(): Observable<Member | Errors> {
-    return this.membersService.findAllTest().pipe(
-      map((listMember) => listMember),
-      catchError((error) => of({ msg: 'Error al listar los miembros', error, status: HttpStatus.CONFLICT }))
-    );
-  }
   @EventPattern('findAllMembers')
   findAll(): Observable<Member | Errors> {
     return this.membersService.findAll().pipe(

@@ -32,8 +32,8 @@ export class UsersController {
   @Get(':id')
   @ResponseMessage("Usuarios encontrado con exito")
   findOne(@Param('id') id: string) {
-    return this.userMsService.send('findOneUser', +id);
-    
+    console.log(typeof id)
+    return this.userMsService.send('findOneUser', +id);    
   }
 
   @UseGuards(AuthGuard)

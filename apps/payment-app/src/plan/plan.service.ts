@@ -1,6 +1,6 @@
 
 import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { Plan } from '@prisma/mysql/client';
 import { Observable, from } from 'rxjs';
 import { CreatePlanDto } from './dto/create-plan.dto';
@@ -51,6 +51,36 @@ export class PlanService {
       }
     }))
   }
+
+  getFilteredPlans(searchString: string): Observable<Plan[]> {
+    return from(this.prismaService.plan.findMany({
+      where: {
+        OR: [
+          {
+            name: { contains: searchString },
+          }/*,
+          {
+            content: { contains: searchString },
+          },*/
+        ],
+      },
+      include: {
+        member: {
+          include: {
+            user: {
+              include: {
+                Profile: {}
+              }
+            }
+          }
+        },
+        invoice: {
+
+        }
+      }
+    }));
+  }
+
 
   update(id: number, updatePlanDto: UpdatePlanDto): Observable<Plan> {
     return from(this.prismaService.plan.update({

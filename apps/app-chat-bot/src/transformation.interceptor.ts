@@ -5,7 +5,8 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable, map } from 'rxjs';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { Observable, catchError, map, of } from 'rxjs';
 
 export interface Response<T> {
   statusCode: number;
@@ -56,6 +57,19 @@ export class TransformationInterceptor<T>
           };
         }
       }),
+      catchError((error) => {
+        try {
+          if (error instanceof PrismaClientKnownRequestError) {
+            if(error?.code === 'P2025') {
+              return of({ isSucces: false, error: error?.meta})
+            }
+            return of({ isSucces: false, error: error})            
+          }
+          return of(context.switchToHttp().getResponse().statusCode, error)           
+        } catch (err) {
+          return of({ isSucces: false, error: error})          
+        }   
+      })
     );
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Session, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, Session, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AuthGuard } from 'apps/auth-app/src/auth.guard';
 import { Observable } from 'rxjs';
@@ -35,13 +35,24 @@ export class PlanController {
 
   @Patch(':id')
   @UseGuards(AuthGuard)
-  @ResponseMessage('Plan fue modificado con exito')
+  @ResponseMessage('Plan fue modificado con exito***')
   update(@Param('id') id: string, @Body() updatePlanDto: CreatePlanDto): Observable<Plan> {
     const dataPayment = {
       id: +id,
       ...this._dataPlan(updatePlanDto)
     }
     return this.paymentMsService.send('updatePlan', updatePlanDto)
+  }
+
+  @Get('filteredplans')
+  @UseGuards(AuthGuard)
+  @ResponseMessage('Listado de planes')
+  getFilteredPlans(
+    @Query('searchString') searchString: string,
+  ): Observable<Plan[]> {
+    console.log(searchString, 'microservicio')
+    return this.paymentMsService.send('filteredPlan', searchString)
+    
   }
 
   @Delete(':id')
