@@ -17,6 +17,12 @@ import { UpdateBotDto } from './dto/update-bot.dto';
 export class BotsController {
   constructor(private readonly botsService: BotsService) { }
 
+  @Get('unique/:name')
+  @ResponseMessage('Consulta Unica')
+  findOneUnique(@Param('name') name: string) {
+    return this.botsService.findOneUnique(name);
+  }
+
   @ResponseMessage('Filtrado por Paginas')
   @Get('filtered/:query/:currentPage')
   findFilteredPages(
@@ -50,13 +56,17 @@ export class BotsController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateBotDto: UpdateBotDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateBotDto: UpdateBotDto) {
     return this.botsService.update(id, updateBotDto);
   }
 
   @Delete(':id')
   @ResponseMessage('Registro Eliminado')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.botsService.remove(id);
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() member_id: number) {
+    return this.botsService.remove(id, member_id);
   }
 }

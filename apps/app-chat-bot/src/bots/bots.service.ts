@@ -10,6 +10,13 @@ export class BotsService {
   constructor(private readonly prismaService: MysqlPrismaService) { }
 
   @UseFilters(AllExceptionFilter)
+  async findOneUnique(name: string): Promise<Bot> {
+    return await this.prismaService.bot.findUnique({
+      where: { name }
+    });
+  }
+
+  @UseFilters(AllExceptionFilter)
   async findFilteredPages(
     query: string,
     currentPage: number
@@ -146,31 +153,23 @@ export class BotsService {
   }
 
   @UseFilters(AllExceptionFilter)
-  async remove(id: number): Promise<Bot> {
-    const result = await this.prismaService.bot.findFirst({
-      where: { id },
-      select: {
-        memberOnBot: {
-          select: { member_id: true }
-        }
-      }
+  async remove(id: number, member_id: number): Promise<Bot> {
+
+    const result = await this.prismaService.bot.delete({
+      where: { id }
     });
 
     if (result) {
-      const { member_id } = result.memberOnBot[0]
-      //  // Log item: "bot"
       const objetMemberLog = {
         item: "Bot",
         counter: -1,
         member_id
       };
+
       await this.prismaService.memberLog.create({
         data: { ...objetMemberLog }
-      })
+      });
     }
-
-    return this.prismaService.bot.delete({
-      where: { id }
-    })
+    return result
   }
 }
