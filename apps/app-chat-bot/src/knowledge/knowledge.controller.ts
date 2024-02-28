@@ -34,12 +34,6 @@ export class KnowledgeController {
     return this.knowledgeService.findCountRecords(query)
   }
 
-  @Get('textContext/:id')
-  @ResponseMessage('Envio de textContent')
-  textContent(@Param('id', ParseIntPipe) id: number) {
-    return this.knowledgeService.textContent(id);
-  }
-
   @Post()
   @ResponseMessage('Registro Creado')
   create(

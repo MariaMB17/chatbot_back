@@ -56,23 +56,13 @@ export class BotsService {
   @UseFilters(AllExceptionFilter)
   async create(createBotDto: CreateBotDto): Promise<Bot> {
     const { knowledgeIds, member_id } = createBotDto;
-    if (knowledgeIds.length === 0) {
-      throw new Error('No knowledge provided');
-    }
 
     const response = await this.prismaService.bot.create({
       data: { ...createBotDto.bot }
     })
 
     if (response) {
-      const knowledgeOnBot = createBotDto.knowledgeIds.map((knowledge_id) => {
-        return { bot_id: response.id, knowledge_id };
-      });
-
-      await this.prismaService.knowledgeOnBot.createMany({
-        data: knowledgeOnBot,
-      });
-
+      // Add bot on member  
       await this.prismaService.memberOnBot.create({
         data: {
           bot_id: response.id,
@@ -80,16 +70,30 @@ export class BotsService {
         }
       })
 
-      // Log item: "bot"
+      // add log item: "bot"
       const objetMemberLog = {
         item: "Bot",
         counter: 1,
         member_id
       };
-
       await this.prismaService.memberLog.create({
         data: { ...objetMemberLog }
       })
+
+      // Knowledge Seleccionados
+      if (knowledgeIds.length > 0) {
+        const knowledgeOnBot = createBotDto.knowledgeIds.map((knowledge_id) => {
+          return { bot_id: response.id, knowledge_id };
+        });
+
+        const result = await this.prismaService.knowledgeOnBot.createMany({
+          data: knowledgeOnBot,
+        });
+
+        if (!result) {
+          console.log('Error Agregando knowledgeOnBot...')
+        }
+      }
     }
     return response
   }
@@ -153,13 +157,25 @@ export class BotsService {
   }
 
   @UseFilters(AllExceptionFilter)
-  async remove(id: number, member_id: number): Promise<Bot> {
+  async remove(id: number): Promise<Bot> {
+
+    const response = await this.prismaService.bot.findFirst({
+      where: { id },
+      select: {
+        memberOnBot: {
+          select: {
+            member_id: true
+          }
+        }
+      }
+    });
 
     const result = await this.prismaService.bot.delete({
       where: { id }
     });
 
     if (result) {
+      const { member_id } = response.memberOnBot[0];
       const objetMemberLog = {
         item: "Bot",
         counter: -1,

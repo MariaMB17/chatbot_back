@@ -117,28 +117,9 @@ export class KnowledgeService {
     return result
   }
 
-  // solo probar el chat para obtener la cadena de texto
-  @UseFilters(AllExceptionFilter)
-  async textContent(id: number): Promise<String> {
-    const result = await this.prismaService.knowledgeBase.findFirst({
-      where: { id },
-      select: { textContent: true }
-    });
-
-    return result.textContent;
-  }
-
   @UseFilters(AllExceptionFilter)
   async findAll(): Promise<Knowledge[]> {
-    return await this.prismaService.knowledge.findMany({
-      include: {
-        knowledgeBase: {
-          include: {
-            knowledgeFile: true
-          }
-        }
-      }
-    });
+    return await this.prismaService.knowledge.findMany();
   }
 
   @UseFilters(AllExceptionFilter)
@@ -173,6 +154,83 @@ export class KnowledgeService {
         updatedAt: new Date(),
       },
     });
+    return response
+  }
+
+  @UseFilters(AllExceptionFilter)
+  async remove(id: number): Promise<Knowledge> {
+
+    //Busco member_id y Cantidad de Documento Registrados
+    const response = await this.prismaService.knowledge.findFirst({
+      where: { id },
+      select: {
+        memberOnKnowledge: {
+          select: { member_id: true }
+        },
+        _count: {
+          select: { knowledgeBase: true },
+        }
+      }
+    });
+
+    const knowledge = await this.prismaService.knowledge.delete({
+      where: { id }
+    });
+
+    if (knowledge) {
+      if (response._count.knowledgeBase > 0) {
+
+        const { member_id } = response.memberOnKnowledge[0];
+        const counter = -response._count.knowledgeBase;
+        // Log item: "knowledge"
+        const objetMemberLog = {
+          item: "Document",
+          counter,
+          member_id
+        };
+        await this.prismaService.memberLog.create({
+          data: { ...objetMemberLog }
+        })
+      }
+    }
+
+    return knowledge
+  }
+
+  @UseFilters(AllExceptionFilter)
+  async removeBase(id: number): Promise<KnowledgeBase> {
+
+    //Busco member_id y Cantidad de Documento Registrados
+    const result = await this.prismaService.knowledgeBase.findFirst({
+      where: { id },
+      select: {
+        knowledge: {
+          select: {
+            memberOnKnowledge: {
+              select: { member_id: true }
+            }
+          }
+        }
+      }
+    }
+    );
+
+    if (result) {
+      const { member_id } = result.knowledge.memberOnKnowledge[0];
+      // Log item: "knowledgeBase"
+      const objetMemberLog = {
+        item: "Document",
+        counter: -1,
+        member_id
+      };
+      await this.prismaService.memberLog.create({
+        data: { ...objetMemberLog }
+      })
+    }
+
+    const response = await this.prismaService.knowledgeBase.delete({
+      where: { id }
+    })
     return response
   }
 
@@ -328,47 +386,4 @@ export class KnowledgeService {
     };
   }
 
-  @UseFilters(AllExceptionFilter)
-  async remove(id: number): Promise<Knowledge> {
-    const response = await this.prismaService.knowledge.findFirst({
-      where: { id },
-      select: {
-        memberOnKnowledge: {
-          select: { member_id: true }
-        },
-        _count: {
-          select: { knowledgeBase: true },
-        }
-      }
-    });
-
-    const knowledge = await this.prismaService.knowledge.delete({
-      where: { id }
-    });
-
-    if (knowledge) {
-      if (response) { // Si tiene Documentos Registrados
-        const { member_id } = response.memberOnKnowledge[0];
-        const counter = -response._count.knowledgeBase;
-        //  // Log item: "knowledge"
-        const objetMemberLog = {
-          item: "Document",
-          counter,
-          member_id
-        };
-        await this.prismaService.memberLog.create({
-          data: { ...objetMemberLog }
-        })
-      }
-    }
-    return knowledge
-  }
-
-  @UseFilters(AllExceptionFilter)
-  async removeBase(id: number): Promise<KnowledgeBase> {
-    const response = await this.prismaService.knowledgeBase.delete({
-      where: { id }
-    })
-    return response
-  }
 }

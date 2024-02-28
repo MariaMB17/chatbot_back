@@ -8,17 +8,6 @@ datasource db {
   url      = env("MYSQL_DATABASE_URL")
 }
 
-// se agrego la eliminacion en cascada
-model KnowledgeOnBot {
-  bot          Bot       @relation(fields: [bot_id], references: [id], onDelete: Cascade)
-  bot_id       Int
-  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
-  knowledge_id Int
-
-  @@id([bot_id, knowledge_id])
-  @@map("knowledgenbots")
-}
-
 model ItemOnChat {
   id      Int     @id @default(autoincrement())
   ask     String
@@ -41,6 +30,28 @@ model Chat {
 
   @@map("chats")
 }
+// se agrego la eliminacion en cascada 
+// se cambio la logica del (id)
+model KnowledgeOnBot {
+  id           Int        @id @default(autoincrement())
+  bot          Bot       @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+  bot_id       Int
+  knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
+  knowledge_id Int
+
+  @@map("knowledgenbots")
+}
+
+// se agrego la eliminacion en cascada
+model MemberOnBot {
+  id        Int     @id @default(autoincrement())
+  member    Member @relation(fields: [member_id], references: [id], onDelete: Cascade)
+  member_id Int
+  bot       Bot    @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+  bot_id    Int
+
+  @@map("memberonbots")
+}
 
 //se especifica el campo name como unico
 model Bot {
@@ -60,20 +71,9 @@ model Bot {
 }
 
 // se agrego la eliminacion en cascada
-model MemberOnBot {
-  id        Int     @id @default(autoincrement())
-  member    Member @relation(fields: [member_id], references: [id], onDelete: Cascade)
-  member_id Int
-  bot       Bot    @relation(fields: [bot_id], references: [id], onDelete: Cascade)
-  bot_id    Int
-
-  @@map("memberonbots")
-}
-
-// se agrego la eliminacion en cascada
 model MemberOnKnowledge {
   id           Int        @id @default(autoincrement())
-  member       Member    @relation(fields: [member_id], references: [id])
+  member       Member    @relation(fields: [member_id], references: [id],onDelete: Cascade)
   member_id    Int
   knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
   knowledge_id Int

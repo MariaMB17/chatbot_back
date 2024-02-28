@@ -43,7 +43,7 @@ export class MembersService {
                   select: {
                     id: true,
                     originalname: true,
-                    textContent: true,
+                    textContent: false,
                     knowledgeFile: {
                       select: {
                         id: true,
