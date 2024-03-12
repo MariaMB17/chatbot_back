@@ -71,13 +71,13 @@ export class BotsService {
       })
 
       // add log item: "bot"
-      const objetMemberLog = {
+      const objectMemberLog = {
         item: "Bot",
         counter: 1,
         member_id
       };
       await this.prismaService.memberLog.create({
-        data: { ...objetMemberLog }
+        data: { ...objectMemberLog }
       })
 
       // Knowledge Seleccionados
@@ -129,20 +129,12 @@ export class BotsService {
     return this.prismaService.bot.findFirst({
       where: { id },
       include: {
-        memberOnBot: {
-          include: {
-            member: true
-          }
-        },
         knowledgeOnBot: {
-          include: {
+          select: {
             knowledge: {
-              include: {
-                knowledgeBase: {
-                  include: {
-                    knowledgeFile: true
-                  }
-                }
+              select: {
+                id: true,
+                name: true
               }
             }
           }
@@ -152,8 +144,36 @@ export class BotsService {
   }
 
   @UseFilters(AllExceptionFilter)
-  update(id: number, updateBotDto: UpdateBotDto) {
-    return `This action updates a #${id} bot`;
+  async update(id: number, updateBotDto: UpdateBotDto): Promise<Bot> {
+
+    const { knowledgeIds } = updateBotDto;
+    const response = await this.prismaService.bot.update({
+      where: { id },
+      data: { ...updateBotDto.bot }
+    });
+
+    if (response) {
+      await this.prismaService.knowledgeOnBot.deleteMany({
+        where: { bot_id: id }
+      })
+
+      // Knowledge Seleccionados
+      if (knowledgeIds.length > 0) {
+        const knowledgeOnBot = updateBotDto.knowledgeIds.map((knowledge_id) => {
+          return { bot_id: response.id, knowledge_id };
+        });
+
+        const result = await this.prismaService.knowledgeOnBot.createMany({
+          data: knowledgeOnBot,
+        });
+
+        if (!result) {
+          console.log('Error Agregando knowledgeOnBot...')
+        }
+      }
+    }
+
+    return response;
   }
 
   @UseFilters(AllExceptionFilter)
