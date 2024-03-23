@@ -1,16 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards} from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ResponseMessage } from '../message.decorator';
+import { Body, Controller, Delete, Get, Inject, Param, Post, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Observable, of } from 'rxjs';
 import { AuthGuard } from 'apps/auth-app/src/auth.guard';
+import { Observable } from 'rxjs';
+import { ResponseMessage } from '../message.decorator';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService, 
-    @Inject('user-service') private userMsService: ClientProxy) {}
+  constructor(private readonly usersService: UsersService,
+    @Inject('user-service') private userMsService: ClientProxy) { }
 
   @Post()
   @ResponseMessage('Usuario creado con exito')
@@ -34,9 +33,16 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
-  @ResponseMessage("Usuario moificado con exito") 
+  @ResponseMessage("Usuario moificado con exito")
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
+  @Get('unique/:email')
+  @ResponseMessage("Usuarios encontrado con exito")
+  findOneUnique(@Param('email') email: string) {
+    return this.usersService.findOneUnique(email);
+  }
 }
+

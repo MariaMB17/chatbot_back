@@ -9,11 +9,12 @@ datasource db {
 }
 
 model ItemOnChat {
-  id      Int     @id @default(autoincrement())
-  ask     String
-  answer  String
-  chat    Chat   @relation(fields: [chat_id], references: [id], onDelete: Cascade)
-  chat_id Int
+  id        Int       @id @default(autoincrement())
+  ask       String
+  answer    String
+  chat      Chat     @relation(fields: [chat_id], references: [id], onDelete: Cascade)
+  chat_id   Int
+  createdAt DateTime  @default(now())
 
   @@map("itemonchat")
 }
@@ -38,17 +39,19 @@ model KnowledgeOnBot {
   bot_id       Int
   knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
   knowledge_id Int
+  createdAt    DateTime   @default(now())
 
   @@map("knowledgenbots")
 }
 
 // se agrego la eliminacion en cascada
 model MemberOnBot {
-  id        Int     @id @default(autoincrement())
-  member    Member @relation(fields: [member_id], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  member    Member   @relation(fields: [member_id], references: [id], onDelete: Cascade)
   member_id Int
-  bot       Bot    @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+  bot       Bot      @relation(fields: [bot_id], references: [id], onDelete: Cascade)
   bot_id    Int
+  createdAt DateTime  @default(now())
 
   @@map("memberonbots")
 }
@@ -77,6 +80,7 @@ model MemberOnKnowledge {
   member_id    Int
   knowledge    Knowledge @relation(fields: [knowledge_id], references: [id], onDelete: Cascade)
   knowledge_id Int
+  createdAt    DateTime   @default(now())
 
   @@map("memberonknowledges")
 }
@@ -145,6 +149,7 @@ model KnowledgeFile {
   secure_url       String
   knowledgeBase    KnowledgeBase @relation(fields: [knowledgeBase_id], references: [id], onDelete: Cascade)
   knowledgeBase_id Int
+  createdAt        DateTime       @default(now())
 
   @@map("knowledgefiles")
 }
@@ -163,7 +168,6 @@ model User {
 
 model Profile {
   id         Int       @id @default(autoincrement())
-  userId     Int?      @unique
   firstname  String
   lastname   String
   mobilphone String?
@@ -172,6 +176,7 @@ model Profile {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   User       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int?      @unique
 
   @@map("profiles")
 }
@@ -190,7 +195,6 @@ model Company {
   @@map("companies")
 }
 
-// campo name especificado como unico
 model Plan {
   id          Int       @id @default(autoincrement())
   name        String    @unique

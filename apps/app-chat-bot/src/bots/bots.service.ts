@@ -149,7 +149,10 @@ export class BotsService {
     const { knowledgeIds } = updateBotDto;
     const response = await this.prismaService.bot.update({
       where: { id },
-      data: { ...updateBotDto.bot }
+      data: {
+        ...updateBotDto.bot,
+        updatedAt: new Date()
+      }
     });
 
     if (response) {

@@ -6,9 +6,54 @@ import { AllExceptionFilter } from '../allexceptionsfilter';
 import { MysqlPrismaService } from '../database/mysql-prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
+export interface UserProps {
+  id: number;
+  Member: {
+    id: number;
+    company: {
+      id: number;
+      name: string;
+    };
+  };
+  Profile: {
+    id: number;
+    firstname: string;
+    lastname: string;
+  };
+}
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: MysqlPrismaService) { }
+
+  @UseFilters(AllExceptionFilter)
+  async findOneUnique(email: string): Promise<UserProps | null> {
+    const result = await this.prismaService.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        Member: {
+          select: {
+            id: true,
+            company: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        },
+        Profile: {
+          select: {
+            id: true,
+            lastname: true,
+            firstname: true
+          }
+        }
+      }
+    });
+    return result;
+  }
 
   create(createUserDto: CreateUserDto) {
     const { name } = createUserDto
