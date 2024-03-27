@@ -39,6 +39,7 @@ export class UsersController {
     return this.usersService.remove(+id);
   }
 
+  //@UseGuards(AuthGuard)
   @Get('unique/:email')
   @ResponseMessage("Usuarios encontrado con exito")
   findOneUnique(@Param('email') email: string) {
