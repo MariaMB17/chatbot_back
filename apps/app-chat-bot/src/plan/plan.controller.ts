@@ -35,24 +35,20 @@ export class PlanController {
 
   @Patch(':id')
   @UseGuards(AuthGuard)
-  @ResponseMessage('Plan fue modificado con exito***')
+  @ResponseMessage('Plan fue modificado con exito')
   update(@Param('id') id: string, @Body() updatePlanDto: CreatePlanDto): Observable<Plan> {
     const dataPayment = {
       id: +id,
       ...this._dataPlan(updatePlanDto)
     }
-    return this.paymentMsService.send('updatePlan', updatePlanDto)
+    return this.paymentMsService.send('updatePlan', dataPayment)
   }
 
-  @Get('filteredplans')
+  @Get('/filtered/searchString')
   @UseGuards(AuthGuard)
   @ResponseMessage('Listado de planes')
-  getFilteredPlans(
-    @Query('searchString') searchString: string,
-  ): Observable<Plan[]> {
-    console.log(searchString, 'microservicio')
-    return this.paymentMsService.send('filteredPlan', searchString)
-    
+  getFilteredPlans(@Query() query: { searchString: string }): Observable<Plan[]> {
+    return this.paymentMsService.send('filteredPlan', query.searchString)    
   }
 
   @Delete(':id')

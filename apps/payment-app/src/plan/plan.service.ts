@@ -1,14 +1,17 @@
 
 import { MysqlPrismaService } from '@Appchatbot/database/mysql-prisma.service';
-import { Injectable, Query } from '@nestjs/common';
+import { Injectable, Query, UseFilters } from '@nestjs/common';
 import { Plan } from '@prisma/mysql/client';
 import { Observable, from } from 'rxjs';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
+import { AllExceptionFilter } from '@Appchatbot/allexceptionsfilter';
 
 @Injectable()
 export class PlanService {
   constructor(private readonly prismaService: MysqlPrismaService) { }
+
+  @UseFilters(AllExceptionFilter)
   create(createPlanDto: CreatePlanDto): Observable<Plan> {
     return from(this.prismaService.plan.create({
       data: createPlanDto.plan
@@ -84,7 +87,8 @@ export class PlanService {
 
   update(id: number, updatePlanDto: UpdatePlanDto): Observable<Plan> {
     return from(this.prismaService.plan.update({
-      where: { id }, data: updatePlanDto.plan,
+      where: { id }, 
+      data: updatePlanDto.plan,
     }));
   }
 

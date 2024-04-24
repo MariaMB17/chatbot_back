@@ -13,7 +13,6 @@ export class PlanController {
 
   @EventPattern('createPlan')
   create(@Payload() createPlanDto: CreatePlanDto): Observable<Plan | Errors> {
-    console.log(createPlanDto);
     return this.planService.create(createPlanDto).pipe(
       map((dataPlan) => dataPlan),
       catchError((error) => of({ msg: 'El plan no pudo ser creado', error, status: HttpStatus.CONFLICT }))
@@ -30,7 +29,6 @@ export class PlanController {
 
   @EventPattern('filteredPlan')
   getFilteredPlans(@Payload() searchString: string): Observable<Plan | Errors> {
-    console.log(searchString, 'microservicio')
     return this.planService.getFilteredPlans(searchString).pipe(
       map((listPlan) => listPlan),
       catchError((error) => of({ msg: 'error al encontrar el plan', error, status: HttpStatus.CONFLICT }))

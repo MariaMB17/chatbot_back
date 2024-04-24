@@ -26,6 +26,8 @@ export class AllExceptionFilter implements ExceptionFilter {
     let status = 500;
     let message: string = exception.message;
 
+    console.log(message)
+
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const result = exception.getResponse();
@@ -37,7 +39,7 @@ export class AllExceptionFilter implements ExceptionFilter {
       status = HttpStatus.CONFLICT
       message = JSON.stringify(exception)
     }
-
+    
     const errorResponse = {
       statusCode: status,
       path: request.url,
